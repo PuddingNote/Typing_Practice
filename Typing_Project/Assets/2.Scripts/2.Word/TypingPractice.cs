@@ -10,15 +10,21 @@ public class TypingPractice : MonoBehaviour
     public TextMeshProUGUI displayText;                 // 연습할 텍스트를 표시하는 Text UI
     public TMP_InputField inputField;                   // 사용자의 입력을 받을 InputField UI
     public TextMeshProUGUI resultText;                  // 결과를 표시할 Text UI
+    private TypingStatistics typingStatistics;
 
     private string currentText;                         // 현재 연습할 텍스트
     private List<string> texts = new List<string>();
+
+    private int totalWordsTyped = 0;                    // 총 입력된 단어 수
+    private const int maxWords = 20;                    // 최대 입력할 단어 수
 
     private void Awake()
     {
         LoadTextsFromFile();
         inputField.ActivateInputField();                // 실행하자마자 inputField 포커스
         SetRandomText();
+        this.enabled = false;                           // 연습 시작 전까지 비활성화
+        typingStatistics = GetComponent<TypingStatistics>();
     }
 
     private void Update()
@@ -67,17 +73,32 @@ public class TypingPractice : MonoBehaviour
     // 사용자가 입력한 내용을 검사하는 메서드
     private void CheckInput()
     {
-        if (inputField.text == currentText)
+        bool isCorrect = inputField.text == currentText;
+        resultText.text = isCorrect ? "Correct" : "Wrong";
+
+        // 입력된 단어 수 증가
+        totalWordsTyped++;
+
+        typingStatistics.OnCharacterTyped(isCorrect, inputField.text.Length);
+
+        // 20개 단어를 입력했는지 확인
+        if (totalWordsTyped >= maxWords)
         {
-            resultText.text = "Correct";
+            EndPractice();
         }
         else
         {
-            resultText.text = "Wrong";
+            inputField.text = "";
+            SetRandomText();
+            inputField.ActivateInputField();
         }
+    }
 
-        inputField.text = "";
-        SetRandomText();
-        inputField.ActivateInputField();
+    // 타자 연습 종료
+    private void EndPractice()
+    {
+        inputField.interactable = false;                // 입력 필드 비활성화
+        resultText.text = "Practice Complete!";         // 종료 메시지
+        typingStatistics.EndPractice();                 // 통계 종료 호출
     }
 }
