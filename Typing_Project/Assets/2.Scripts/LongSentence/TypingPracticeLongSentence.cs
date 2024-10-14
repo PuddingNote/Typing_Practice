@@ -1,0 +1,283 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System.IO;
+
+public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
+{
+    // UI
+    public GameObject gameOverPanel;
+    public TextMeshProUGUI displayText;             // 화면에 주어지는 문장 Text
+    public TMP_InputField inputField;               // 사용자 입력 필드
+    public TextMeshProUGUI nextDisplayText;         // 다음 문장 미리보기 Text
+    public TextMeshProUGUI leftText;                // 남은 문장 카운트 Text
+
+    // Typing Variables
+    private string currentText;                     // 현재 화면에 표시된 문장
+    private int currentIndex;                       // 현재 문장 인덱스
+    private int nextIndex;                          // 다음 문장 인덱스
+    private List<string> texts;                     // 메모장에서 불러온 문장 리스트
+
+    private int totalWordsTyped;                    // 입력된 문장의 수
+    private int maxWords;                           // 입력 할 최대 문장의 수
+    private int totalTypedChars;                    // 총 입력된 문자 수
+    private int correctTypedChars;                  // 올바르게 입력된 문자 수
+    private int totalTypos;                         // 총 오타 수
+
+    // ETC
+    private TypingStatisticsLongSentence typingStatistics;
+    private bool isGameEnded;
+
+    // 초기 Data 설정
+    private void SetData()
+    {
+        currentIndex = 0;
+        nextIndex = 0;
+        totalWordsTyped = 0;
+        maxWords = 0;
+        totalTypedChars = 0;
+        correctTypedChars = 0;
+        totalTypos = 0;
+        isGameEnded = false;
+    }
+
+    // Interface 사용
+    public void StartPractice()
+    {
+        this.enabled = true;
+        inputField.ActivateInputField();
+    }
+
+    // Awake()
+    private void Awake()
+    {
+        typingStatistics = GetComponent<TypingStatisticsLongSentence>();
+        texts = new List<string>();
+
+        SetData();
+        SetInputfield();
+        LoadTextsFromFile();
+        SetNextText();
+        inputField.ActivateInputField();
+        this.enabled = false;
+
+        inputField.onValueChanged.AddListener(delegate { CheckInput(); });
+    }
+
+    // Update()
+    private void Update()
+    {
+        if (isGameEnded) return;
+
+        if (!inputField.isFocused)
+        {
+            inputField.ActivateInputField();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            OnEnterPressed();
+        }
+
+        UpdateCPM(false, totalTypedChars + inputField.text.Length);
+        UpdateLeftText();
+    }
+
+    // 초기 Inputfield 설정
+    private void SetInputfield()
+    {
+        var background = inputField.GetComponentInChildren<Image>();
+        background.color = Color.white;
+
+        var outline = inputField.gameObject.AddComponent<Outline>();
+        outline.effectColor = new Color(93f / 255f, 158f / 255f, 235f / 255f, 170f / 255f);
+        outline.effectDistance = new Vector2(2, 2);
+
+        inputField.contentType = TMP_InputField.ContentType.Standard;
+        inputField.lineType = TMP_InputField.LineType.SingleLine;
+    }
+
+    // 초기 File Load 설정 (빈 줄이나 공백 제외)
+    private void LoadTextsFromFile()
+    {
+        // 사용자가 선택한 텍스트를 가져와서 "애국가" 부분에 변수 삽입 하기
+        string path = Application.dataPath + "/2.Scripts/LongSentence/" + "애국가" + ".txt";
+        if (File.Exists(path))
+        {
+            string[] lines = File.ReadAllLines(path);
+            foreach (string line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    texts.Add(line.Trim());
+                    maxWords++;
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("텍스트 파일을 찾을 수 없습니다");
+        }
+    }
+
+    // 출력 Text 설정
+    private void SetNextText()
+    {
+        currentIndex = nextIndex;
+        nextIndex = (currentIndex + 1) % texts.Count;
+
+        currentText = texts[currentIndex];
+        displayText.text = currentText;
+        inputField.characterLimit = currentText.Length;
+        inputField.text = "";
+
+        if (totalWordsTyped == (maxWords - 1))
+        {
+            nextDisplayText.text = "";
+        }
+        else
+        {
+            nextDisplayText.text = texts[nextIndex];
+        }
+    }
+
+    // Inputfield(입력) 검사
+    private void CheckInput()
+    {
+        string typedText = inputField.text;
+        int correctCharsInSentence = 0;
+
+        totalTypos = 0;
+
+        for (int i = 0; i < typedText.Length; i++)
+        {
+            if (i < currentText.Length)
+            {
+                if (typedText[i] == currentText[i])
+                {
+                    correctCharsInSentence++;
+                }
+                else
+                {
+                    totalTypos++;
+                }
+            }
+        }
+
+        UpdateAccuracy(correctCharsInSentence, typedText.Length);
+        UpdateTypo(false);
+
+        UpdateDisplayText(typedText);
+    }
+
+    // Enter키 입력시
+    private void OnEnterPressed()
+    {
+        string typedText = inputField.text;
+
+        totalWordsTyped++;
+
+        for (int i = 0; i < currentText.Length; i++)
+        {
+            if (i < typedText.Length && typedText[i] == currentText[i])
+            {
+                correctTypedChars++;
+            }
+            else if (i >= typedText.Length)
+            {
+                totalTypos++;
+            }
+        }
+
+        totalTypedChars += currentText.Length;
+
+        if (totalWordsTyped < maxWords)
+        {
+            UpdateCPM(true, totalTypedChars);
+            UpdateAccuracy(correctTypedChars, totalTypedChars);
+            UpdateTypo(true);
+            SetNextText();
+        }
+        else
+        {
+            EndPractice();
+        }
+    }
+
+    // 실시간 타수 Update
+    private void UpdateCPM(bool isEnter, int totalCharactersTyped)
+    {
+        float elapsedMinutes = typingStatistics.elapsedTime / 60f;
+        float cpm = (elapsedMinutes > 0) ? (totalCharactersTyped * 2 / elapsedMinutes) : 0;
+
+        if (isEnter)
+        {
+            UpdateHighestCPM(cpm);
+        }
+        typingStatistics.UpdateCPM(cpm);
+    }
+
+    // 최대 타수 Update
+    private void UpdateHighestCPM(float currentCpm)
+    {
+        typingStatistics.UpdateHighestCPM((int)currentCpm);
+    }
+
+    // 실시간 정확도 Update
+    private void UpdateAccuracy(int correctCharsInSentence, int totalCharsTypedInSentence)
+    {
+        int totalCorrectChars = correctTypedChars + correctCharsInSentence;
+        int totalCharsTyped = totalTypedChars + totalCharsTypedInSentence;
+
+        float accuracy = (totalCharsTyped > 0) ? (float)totalCorrectChars / totalCharsTyped * 100f : 0f;
+        typingStatistics.UpdateAccuracy(accuracy);
+    }
+
+    // 실시간 오타 Update
+    private void UpdateTypo(bool isEnter)
+    {
+        typingStatistics.UpdateTypo(isEnter, totalTypos);
+    }
+
+    // 실시간 DisplayText 색 변경
+    private void UpdateDisplayText(string typedText)
+    {
+        string coloredText = "";
+
+        for (int i = 0; i < currentText.Length; i++)
+        {
+            if (i < typedText.Length)
+            {
+                coloredText += (typedText[i] == currentText[i])
+                    ? $"<color=blue>{currentText[i]}</color>"
+                    : $"<color=red>{currentText[i]}</color>";
+            }
+            else
+            {
+                coloredText += currentText[i];
+            }
+        }
+
+        displayText.text = coloredText;
+    }
+
+    // leftText Update
+    private void UpdateLeftText()
+    {
+        leftText.text = $"{totalWordsTyped + 1} / {maxWords}";
+    }
+
+    // 프로그램 종료
+    private void EndPractice()
+    {
+        isGameEnded = true;
+        inputField.interactable = false;
+        inputField.onValueChanged.RemoveAllListeners();
+
+        typingStatistics.EndPractice();
+
+        FindObjectOfType<GameOverLongSentence>().ShowGameOverStats();
+    }
+}
