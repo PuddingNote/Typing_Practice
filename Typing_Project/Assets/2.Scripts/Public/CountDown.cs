@@ -18,20 +18,19 @@ public class CountDown : MonoBehaviour
     {
         typingPractice = GetComponent<ITypingPractice>();
         typingStatistics = GetComponent<ITypingStatistics>();
+        countdownPanel.SetActive(false);
 
-        if (typingPractice == null || typingStatistics == null)
-        {
-            Debug.LogError("TypingPractice 또는 TypingStatistics 스크립트가 설정되지 않았습니다.");
-            return;
-        }
-
-        StartCoroutine(StartCountdown());
+        //if (typingPractice is TypingPracticeShortSentence)
+        //{
+        //    StartCoroutine(StartCountdown());
+        //}
     }
 
     // 시작 코루틴
-    IEnumerator StartCountdown()
+    public IEnumerator StartCountdown()
     {
         countdownPanel.SetActive(true);
+
         for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();

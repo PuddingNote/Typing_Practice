@@ -90,4 +90,14 @@ public class ButtonManagerTitleScene : MonoBehaviour
             buttonImage.color = defaultColor;
         }
     }
+
+    // Á¾·á
+    public void EndGame()
+    {
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
 }
