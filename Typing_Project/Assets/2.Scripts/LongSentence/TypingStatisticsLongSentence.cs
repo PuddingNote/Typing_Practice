@@ -21,18 +21,21 @@ public class TypingStatisticsLongSentence : MonoBehaviour, ITypingStatistics
     private bool isPracticeStarted = false;         // 시작 여부
     private bool isPracticePaused = false;          // 타수 계산 멈춤 여부
 
+    // 시작
+    public void StartPractice()
+    {
+        isPracticeStarted = true;
+        isPracticePaused = false;
+
+        ResetStatistics();
+    }
+
     // 통계 초기화
     private void ResetStatistics()
     {
         elapsedTime = 0f;
         highestCpm = 0;
         typoCount = 0;
-    }
-
-    // Awake()
-    private void Awake()
-    {
-        ResetStatistics();
     }
 
     // Update()
@@ -44,7 +47,7 @@ public class TypingStatisticsLongSentence : MonoBehaviour, ITypingStatistics
         }
     }
 
-    // 전체 시간 Update
+    // 전체시간 Update
     private void UpdateTime()
     {
         elapsedTime += Time.deltaTime;
@@ -84,13 +87,6 @@ public class TypingStatisticsLongSentence : MonoBehaviour, ITypingStatistics
             typoCount += currentTypo;
         }
         typoCountText.text = $"{typoCount + currentTypo}";
-    }
-
-    // 시작
-    public void StartPractice()
-    {
-        isPracticeStarted = true;
-        isPracticePaused = false;
     }
 
     // 일시정지

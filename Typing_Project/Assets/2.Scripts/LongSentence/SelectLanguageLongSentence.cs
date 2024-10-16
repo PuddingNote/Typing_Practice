@@ -36,7 +36,7 @@ public class SelectLanguageLongSentence : MonoBehaviour
     // 언어 선택에 따른 처리
     private void SelectLanguage(string language)
     {
-        PersistentData.selectedLanguage = language;
+        PersistentDataLongSentence.selectedLanguage = language;
         languagePanel.SetActive(false);
         selectTitlePanel.SetActive(true);
 

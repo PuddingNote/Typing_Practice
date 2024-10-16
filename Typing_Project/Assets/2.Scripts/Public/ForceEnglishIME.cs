@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Runtime.InteropServices;
 
+// 영문 시작 설정
 public class ForceEnglishIME
 {
     // imm32.dll 사용 선언
@@ -35,6 +36,6 @@ public class ForceEnglishIME
         // IME 컨텍스트 해제
         ImmReleaseContext(hwnd, hIMC);
 
-        Debug.Log("영어 입력 모드로 설정됨.");
+        //Debug.Log("영어 입력 모드로 설정됨.");
     }
 }

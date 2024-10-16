@@ -5,28 +5,30 @@ using UnityEngine.SceneManagement;
 
 public class ButtonManagerShortSentence : MonoBehaviour
 {
+    // UI
     public GameObject countdownPanel;
     public GameObject selectLanguagePanel;
 
+    // Start()
     private void Start()
     {
-        // 선택된 제목과 언어가 있는 경우 CountDown 패널로 시작
         if (!string.IsNullOrEmpty(PersistentDataShortSentence.selectedLanguage))
         {
-            GameObject countDownObject = GameObject.Find("TypingManager");
-            CountDown countDown = countDownObject.GetComponent<CountDown>();
-
+            CountDown countDown = FindObjectOfType<CountDown>();
             selectLanguagePanel.SetActive(false);
+
             countDown.StartCoroutine("StartCountdown");
         }
     }
 
+    // GoTitleScene()
     public void GoTitleScene()
     {
         SceneManager.LoadScene("TitleScene");
         PersistentDataShortSentence.selectedLanguage = "";
     }
 
+    // RestartScene()
     public void RestartScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

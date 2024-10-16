@@ -18,12 +18,8 @@ public class CountDown : MonoBehaviour
     {
         typingPractice = GetComponent<ITypingPractice>();
         typingStatistics = GetComponent<ITypingStatistics>();
-        countdownPanel.SetActive(false);
 
-        //if (typingPractice is TypingPracticeShortSentence)
-        //{
-        //    StartCoroutine(StartCountdown());
-        //}
+        countdownPanel.SetActive(false);
     }
 
     // 시작 코루틴

@@ -6,7 +6,8 @@ using TMPro;
 using System.IO;
 using UnityEngine.SceneManagement;
 
-public static class PersistentData
+// static
+public static class PersistentDataLongSentence
 {
     public static string selectedLanguage = "";
     public static string selectedTitle = "";
@@ -50,16 +51,18 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     {
         currentIndex = 0;
         nextIndex = 0;
+
         totalWordsTyped = 0;
         maxWords = 0;
         totalTypedChars = 0;
         correctTypedChars = 0;
         totalTypos = 0;
+
         isGameEnded = false;
         isPaused = false;
     }
 
-    // Interface 사용
+    // 시작
     public void StartPractice()
     {
         SetTypingLanguage();
@@ -106,7 +109,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         UpdateLeftText();
     }
 
-    // 초기 버튼들 설정
+    // 버튼 설정
     private void SetButtons()
     {
         backButton.onClick.AddListener(OnBackButtonPressed);
@@ -114,7 +117,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         titleButton.onClick.AddListener(OnTitleButtonPressed);
     }
 
-    // 초기 Inputfield 설정
+    // Inputfield 설정
     private void SetInputfield()
     {
         var background = inputField.GetComponentInChildren<Image>();
@@ -128,25 +131,25 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         inputField.lineType = TMP_InputField.LineType.SingleLine;
     }
 
-    // 초기 타이핑언어 설정
+    // 타이핑 언어 설정
     private void SetTypingLanguage()
     {
-        if (PersistentDataShortSentence.selectedLanguage == "Korean")
-        {
-            ForceKoreanIME forceKoreanIME = new ForceKoreanIME();
-            forceKoreanIME.Start();
-        }
-        else
+        if (PersistentDataLongSentence.selectedLanguage == "English")
         {
             ForceEnglishIME forceEnglishIME = new ForceEnglishIME();
             forceEnglishIME.Start();
         }
+        else if (PersistentDataLongSentence.selectedLanguage == "Korean")
+        {
+            ForceKoreanIME forceKoreanIME = new ForceKoreanIME();
+            forceKoreanIME.Start();
+        }
     }
 
-    // 초기 File Load 설정 (빈 줄이나 공백 제외)
+    // File Load (빈 줄이나 공백 제외)
     private void LoadTextsFromFile()
     {
-        string path = Application.dataPath + "/2.Scripts/LongSentence/" + PersistentData.selectedLanguage + "/" + PersistentData.selectedTitle + ".txt";
+        string path = Application.dataPath + "/2.Scripts/LongSentence/Texts/" + PersistentDataLongSentence.selectedLanguage + "/" + PersistentDataLongSentence.selectedTitle + ".txt";
         if (File.Exists(path))
         {
             string[] lines = File.ReadAllLines(path);
@@ -167,7 +170,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         SetNextText();
     }
 
-    // 출력 Text 설정
+    // 다음 Text 설정
     private void SetNextText()
     {
         currentIndex = nextIndex;
@@ -267,7 +270,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         }
     }
 
-    // 실시간 타수 Update
+    // 타수 Update
     private void UpdateCPM(bool isEnter, int totalCharactersTyped)
     {
         float elapsedMinutes = typingStatistics.elapsedTime / 60f;
@@ -280,13 +283,13 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         typingStatistics.UpdateCPM(cpm);
     }
 
-    // 최대 타수 Update
+    // 최대타수 Update
     private void UpdateHighestCPM(float currentCpm)
     {
         typingStatistics.UpdateHighestCPM((int)currentCpm);
     }
 
-    // 실시간 정확도 Update
+    // 정확도 Update
     private void UpdateAccuracy(int correctCharsInSentence, int totalCharsTypedInSentence)
     {
         int totalCorrectChars = correctTypedChars + correctCharsInSentence;
@@ -296,13 +299,13 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         typingStatistics.UpdateAccuracy(accuracy);
     }
 
-    // 실시간 오타 Update
+    // 오타 Update
     private void UpdateTypo(bool isEnter)
     {
         typingStatistics.UpdateTypo(isEnter, totalTypos);
     }
 
-    // 실시간 DisplayText 색 변경
+    // 텍스트 색상 Update
     private void UpdateDisplayText(string typedText)
     {
         string coloredText = "";
@@ -348,18 +351,18 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     private void OnTitleButtonPressed()
     {
         SceneManager.LoadScene("TitleScene");
-        PersistentData.selectedTitle = "";
-        PersistentData.selectedLanguage = "";
+        PersistentDataLongSentence.selectedTitle = "";
+        PersistentDataLongSentence.selectedLanguage = "";
     }
 
-    // 타이핑 연습 일시정지
+    // 일시정지
     private void PausePractice()
     {
         isPaused = true;
         typingStatistics.PausePractice();
     }
 
-    // 타이핑 연습 재개
+    // 재개
     private void ResumePractice()
     {
         isPaused = false;
@@ -368,7 +371,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         inputField.caretPosition = inputField.text.Length;
     }
 
-    // 프로그램 종료
+    // 종료
     private void EndPractice()
     {
         isGameEnded = true;

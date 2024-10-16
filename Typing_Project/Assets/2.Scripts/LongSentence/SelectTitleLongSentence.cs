@@ -22,12 +22,12 @@ public class SelectTitleLongSentence : MonoBehaviour
         countDown = GetComponent<CountDown>();
 
         // 언어 선택에 따른 버튼 활성화
-        if (PersistentData.selectedLanguage == "English")
+        if (PersistentDataLongSentence.selectedLanguage == "English")
         {
             ActivateButtons(englishChapterButtons);
             DeactivateButtons(koreanChapterButtons);
         }
-        else if (PersistentData.selectedLanguage == "Korean")
+        else if (PersistentDataLongSentence.selectedLanguage == "Korean")
         {
             ActivateButtons(koreanChapterButtons);
             DeactivateButtons(englishChapterButtons);
@@ -50,7 +50,7 @@ public class SelectTitleLongSentence : MonoBehaviour
     // 긴글 선택
     private void SelectTitle(string title)
     {
-        PersistentData.selectedTitle = title;
+        PersistentDataLongSentence.selectedTitle = title;
         selectedTitle = title;
         selectTitlePanel.SetActive(false);
 

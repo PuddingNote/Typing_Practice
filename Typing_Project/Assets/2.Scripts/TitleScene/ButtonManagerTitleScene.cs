@@ -71,7 +71,7 @@ public class ButtonManagerTitleScene : MonoBehaviour
         }
     }
 
-    // 버튼 클릭 시
+    // 버튼 클릭
     private void OnButtonClick(string sceneToLoad, Image buttonImage)
     {
         buttonImage.color = clickedColor;

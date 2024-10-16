@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Runtime.InteropServices;
 
+// 한글 시작 설정
 public class ForceKoreanIME
 {
     // imm32.dll 사용 선언
@@ -36,6 +37,6 @@ public class ForceKoreanIME
         // IME 컨텍스트 해제
         ImmReleaseContext(hwnd, hIMC);
 
-        Debug.Log("한글 입력 모드로 설정됨.");
+        //Debug.Log("한글 입력 모드로 설정됨.");
     }
 }
