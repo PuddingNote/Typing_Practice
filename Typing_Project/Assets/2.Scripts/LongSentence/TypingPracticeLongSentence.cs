@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System;
 
 // static
 public static class PersistentDataLongSentence
@@ -65,26 +66,28 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     // 시작
     public void StartPractice()
     {
-        SetTypingLanguage();
-        LoadTextsFromFile();
-
+        selectPanel.SetActive(false);
         this.enabled = true;
-        inputField.ActivateInputField();
     }
 
     // Awake()
     private void Awake()
     {
+        this.enabled = false;
+    }
+
+    // Start()
+    private void Start()
+    {
         typingStatistics = GetComponent<TypingStatisticsLongSentence>();
         texts = new List<string>();
 
-        selectPanel.SetActive(false);
         SetButtons();
         SetData();
         SetInputfield();
-
+        LoadTextsFromFile();
+        SetNextText();
         inputField.ActivateInputField();
-        this.enabled = false;
 
         inputField.onValueChanged.AddListener(delegate { CheckInput(); });
     }
@@ -131,25 +134,18 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         inputField.lineType = TMP_InputField.LineType.SingleLine;
     }
 
-    // 타이핑 언어 설정
-    private void SetTypingLanguage()
-    {
-        if (PersistentDataLongSentence.selectedLanguage == "English")
-        {
-            ForceEnglishIME forceEnglishIME = new ForceEnglishIME();
-            forceEnglishIME.Start();
-        }
-        else if (PersistentDataLongSentence.selectedLanguage == "Korean")
-        {
-            ForceKoreanIME forceKoreanIME = new ForceKoreanIME();
-            forceKoreanIME.Start();
-        }
-    }
-
     // File Load (빈 줄이나 공백 제외)
     private void LoadTextsFromFile()
     {
-        string path = Application.dataPath + "/2.Scripts/LongSentence/Texts/" + PersistentDataLongSentence.selectedLanguage + "/" + PersistentDataLongSentence.selectedTitle + ".txt";
+        string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", 
+            PersistentDataLongSentence.selectedLanguage, PersistentDataLongSentence.selectedTitle + ".txt");
+
+//#if UNITY_EDITOR
+//        path = Application.dataPath + "/2.Scripts/LongSentence/Texts/" + PersistentDataLongSentence.selectedLanguage + "/" + PersistentDataLongSentence.selectedTitle + ".txt";
+//#else
+//       path = Application.dataPath + "/../LongSentence/Texts/" + PersistentDataLongSentence.selectedLanguage + "/" + PersistentDataLongSentence.selectedTitle + ".txt";
+//#endif
+
         if (File.Exists(path))
         {
             string[] lines = File.ReadAllLines(path);
@@ -166,8 +162,6 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         {
             Debug.LogError("텍스트 파일을 찾을 수 없습니다");
         }
-
-        SetNextText();
     }
 
     // 다음 Text 설정

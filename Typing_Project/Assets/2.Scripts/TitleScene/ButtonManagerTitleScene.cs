@@ -75,7 +75,7 @@ public class ButtonManagerTitleScene : MonoBehaviour
     private void OnButtonClick(string sceneToLoad, Image buttonImage)
     {
         buttonImage.color = clickedColor;
-        SceneManager.LoadScene(sceneToLoad);
+        SceneManager.LoadSceneAsync(sceneToLoad);
     }
 
     // 버튼 하이라이트

@@ -15,7 +15,6 @@ public class TypingStatisticsShortSentence : MonoBehaviour, ITypingStatistics
     // Typing Stats
     [HideInInspector] public float elapsedTime;     // 시간 (초)
     private int highestCpm;                         // 최고 타수
-    private int typoCount;                          // 오타 개수
 
     // ETC
     private bool isPracticeStarted = false;         // 시작 여부
@@ -35,7 +34,6 @@ public class TypingStatisticsShortSentence : MonoBehaviour, ITypingStatistics
     {
         elapsedTime = 0f;
         highestCpm = 0;
-        typoCount = 0;
     }
 
     // Update()
@@ -80,13 +78,9 @@ public class TypingStatisticsShortSentence : MonoBehaviour, ITypingStatistics
     }
 
     // 오타 Update
-    public void UpdateTypo(bool isEnter, int currentTypo)
+    public void UpdateTypo(int currentTypo)
     {
-        if (isEnter)
-        {
-            typoCount += currentTypo;
-        }
-        typoCountText.text = $"{typoCount + currentTypo}";
+        typoCountText.text = $"{currentTypo}";
     }
 
     // 일시정지

@@ -17,6 +17,17 @@ public class SelectTypePositionPractice : MonoBehaviour
     private TypingPracticePositionPractice typingPractice;
     private TypingStatisticsPositionPractice typingStatistics;
 
+    // Awake()
+    private void Awake()
+    {
+        typingPractice = GetComponent<TypingPracticePositionPractice>();
+        typingStatistics = GetComponent<TypingStatisticsPositionPractice>();
+
+        englishButton.onClick.AddListener(() => SelectType("English"));
+        koreanButton.onClick.AddListener(() => SelectType("Korean"));
+        otherButton.onClick.AddListener(() => SelectType("Other"));
+    }
+
     // Start()
     private void Start()
     {
@@ -29,17 +40,6 @@ public class SelectTypePositionPractice : MonoBehaviour
             selectTypePanel.SetActive(false);
             StartPractice();
         }
-    }
-
-    // Awake()
-    private void Awake()
-    {
-        typingPractice = GetComponent<TypingPracticePositionPractice>();
-        typingStatistics = GetComponent<TypingStatisticsPositionPractice>();
-
-        englishButton.onClick.AddListener(() => SelectType("English"));
-        koreanButton.onClick.AddListener(() => SelectType("Korean"));
-        otherButton.onClick.AddListener(() => SelectType("Other"));
     }
 
     // 타입 선택 결과

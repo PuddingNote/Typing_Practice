@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.IO;
 using UnityEngine.SceneManagement;
+using System;
 
 // static
 public static class PersistentDataShortSentence
@@ -36,7 +37,6 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
 
     private int totalWordsTyped;                    // 입력된 문장의 수
     private int maxWords;                           // 입력 할 최대 문장의 수
-    private int totalTypedChars;                    // 총 입력된 문자 수
     private int correctTypedChars;                  // 올바르게 입력된 문자 수
     private int totalTypos;                         // 총 오타 수
 
@@ -53,7 +53,6 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
 
         totalWordsTyped = 0;
         maxWords = 10;                              // 단문연습 최대 문장 수 설정
-        totalTypedChars = 0;
         correctTypedChars = 0;
         totalTypos = 0;
 
@@ -64,26 +63,28 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     // 시작
     public void StartPractice()
     {
-        SetTypingLanguage();
-        LoadTextsFromFile();
-
+        selectPanel.SetActive(false);
         this.enabled = true;
-        inputField.ActivateInputField();
     }
 
     // Awake()
     private void Awake()
     {
+        this.enabled = false;
+    }
+
+    // Start()
+    private void Start()
+    {
         typingStatistics = GetComponent<TypingStatisticsShortSentence>();
         texts = new List<string>();
-
-        selectPanel.SetActive(false);
+        
         SetButtons();
         SetData();
         SetInputfield();
-        
+        LoadTextsFromFile();
+        SetNextText();
         inputField.ActivateInputField();
-        this.enabled = false;
 
         inputField.onValueChanged.AddListener(delegate { CheckInput(); });
     }
@@ -91,21 +92,19 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     // Update()
     private void Update()
     {
-        if (isPaused) return;
-        if (isGameEnded) return;
+        if (isGameEnded || isPaused) return;
 
         if (!inputField.isFocused)
         {
             inputField.ActivateInputField();
         }
 
+        UpdateCPM(false);
         if (Input.GetKeyDown(KeyCode.Return))
         {
             OnEnterPressed();
+            UpdateCPM(true);
         }
-
-        UpdateCPM(false, totalTypedChars + inputField.text.Length);
-        UpdateLeftText();
     }
 
     // 버튼 설정
@@ -130,25 +129,17 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         inputField.lineType = TMP_InputField.LineType.SingleLine;
     }
 
-    // 타이핑 언어 설정
-    private void SetTypingLanguage()
-    {
-        if (PersistentDataShortSentence.selectedLanguage == "English")
-        {
-            ForceEnglishIME forceEnglishIME = new ForceEnglishIME();
-            forceEnglishIME.Start();
-        }
-        else if (PersistentDataShortSentence.selectedLanguage == "Korean")
-        {
-            ForceKoreanIME forceKoreanIME = new ForceKoreanIME();
-            forceKoreanIME.Start();
-        }
-    }
-
     // File Load (빈 줄이나 공백 제외)
     private void LoadTextsFromFile()
     {
-        string path = Application.dataPath + "/2.Scripts/ShortSentence/Texts/" + PersistentDataShortSentence.selectedLanguage + ".txt";
+        string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataShortSentence.selectedLanguage + ".txt");
+
+//#if UNITY_EDITOR
+//        path = Application.dataPath + "/2.Scripts/ShortSentence/Texts/" + PersistentDataShortSentence.selectedLanguage + ".txt";
+//#else
+//    path = Application.dataPath + "/../ShortSentence/Texts/" + PersistentDataShortSentence.selectedLanguage + ".txt";
+//#endif
+
         if (File.Exists(path))
         {
             string[] lines = File.ReadAllLines(path);
@@ -164,8 +155,6 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         {
             Debug.LogError("텍스트 파일을 찾을 수 없습니다");
         }
-
-        SetNextText();
     }
 
     // 다음 Text 설정
@@ -173,7 +162,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     {
         if (currentIndex == -1)
         {
-            currentIndex = Random.Range(0, texts.Count);
+            currentIndex = UnityEngine.Random.Range(0, texts.Count);
         }
         else
         {
@@ -182,7 +171,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
 
         do
         {
-            nextIndex = Random.Range(0, texts.Count);
+            nextIndex = UnityEngine.Random.Range(0, texts.Count);
         } while (nextIndex == currentIndex);
 
         currentText = texts[currentIndex];
@@ -205,8 +194,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     {
         string typedText = inputField.text;
         int correctCharsInSentence = 0;
-
-        totalTypos = 0;
+        int typoWords = 0;
 
         for (int i = 0; i < typedText.Length; i++)
         {
@@ -218,13 +206,13 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
                 }
                 else
                 {
-                    totalTypos++;
+                    typoWords++;
                 }
             }
         }
 
-        UpdateAccuracy(correctCharsInSentence, typedText.Length);
-        UpdateTypo(false);
+        UpdateAccuracy(false, correctCharsInSentence, typoWords);
+        UpdateTypo(false, typoWords);
 
         UpdateDisplayText(typedText);
     }
@@ -233,57 +221,56 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     private void OnEnterPressed()
     {
         string typedText = inputField.text;
+        int typoWords = 0;
+        int correctCharsInSentence = 0;
 
         totalWordsTyped++;
 
-        correctTypedChars = 0;
-        totalTypos = 0;
-
-        for (int i = 0; i < currentText.Length; i++)
+        if (string.IsNullOrEmpty(typedText))
         {
-            if (i < typedText.Length)
+            typoWords = currentText.Length;
+        }
+        else
+        {
+            for (int i = 0; i < currentText.Length; i++)
             {
-                if (typedText[i] == currentText[i])
+                if (i < typedText.Length)
                 {
-                    correctTypedChars++;
+                    if (typedText[i] == currentText[i])
+                    {
+                        correctCharsInSentence++;
+                    }
+                    else
+                    {
+                        typoWords++;
+                    }
                 }
                 else
                 {
-                    totalTypos++;
+                    typoWords++;
                 }
             }
-            else
-            {
-                totalTypos++;
-            }
         }
-
-        if (string.IsNullOrEmpty(typedText))
-        {
-            totalTypos = currentText.Length;
-        }
-
-        totalTypedChars += currentText.Length;
-
-        UpdateCPM(true, totalTypedChars);
-        UpdateAccuracy(correctTypedChars, totalTypedChars);
-        UpdateTypo(true);
 
         if (totalWordsTyped < maxWords)
         {
+            UpdateAccuracy(true, correctCharsInSentence, typoWords);
+            UpdateTypo(true, typoWords);
+            UpdateLeftText();
             SetNextText();
         }
         else
         {
+            UpdateAccuracy(true, correctCharsInSentence, typoWords);
             EndPractice();
         }
     }
 
-    // 실시간 타수 Update
-    private void UpdateCPM(bool isEnter, int totalCharactersTyped)
+    // 타수 Update
+    private void UpdateCPM(bool isEnter)
     {
         float elapsedMinutes = typingStatistics.elapsedTime / 60f;
-        float cpm = (elapsedMinutes > 0) ? (totalCharactersTyped * 2 / elapsedMinutes) : 0;
+        float cpm = (correctTypedChars + totalTypos) / elapsedMinutes;
 
         if (isEnter)
         {
@@ -292,26 +279,32 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         typingStatistics.UpdateCPM(cpm);
     }
 
-    // 최대타수 Update
+    // 최고타수 Update
     private void UpdateHighestCPM(float currentCpm)
     {
         typingStatistics.UpdateHighestCPM((int)currentCpm);
     }
 
     // 정확도 Update
-    private void UpdateAccuracy(int correctCharsInSentence, int totalCharsTypedInSentence)
+    private void UpdateAccuracy(bool isEnter, int correctCharsInSentence, int typoWords)
     {
-        int totalCorrectChars = correctTypedChars + correctCharsInSentence;
-        int totalCharsTyped = totalTypedChars + totalCharsTypedInSentence;
+        if (isEnter)
+        {
+            correctTypedChars += correctCharsInSentence;
+        }
 
-        float accuracy = (totalCharsTyped > 0) ? (float)totalCorrectChars / totalCharsTyped * 100f : 0f;
+        float accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
         typingStatistics.UpdateAccuracy(accuracy);
     }
 
     // 오타 Update
-    private void UpdateTypo(bool isEnter)
+    private void UpdateTypo(bool isEnter, int typoWords)
     {
-        typingStatistics.UpdateTypo(isEnter, totalTypos);
+        if (isEnter)
+        {
+            totalTypos += typoWords;
+        }
+        typingStatistics.UpdateTypo(totalTypos + typoWords);
     }
 
     // 텍스트 색상 Update

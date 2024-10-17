@@ -16,10 +16,14 @@ public class CountDown : MonoBehaviour
     // Awake()
     private void Awake()
     {
+        countdownPanel.SetActive(false);
+    }
+
+    // Start()
+    private void Start()
+    {
         typingPractice = GetComponent<ITypingPractice>();
         typingStatistics = GetComponent<ITypingStatistics>();
-
-        countdownPanel.SetActive(false);
     }
 
     // 시작 코루틴

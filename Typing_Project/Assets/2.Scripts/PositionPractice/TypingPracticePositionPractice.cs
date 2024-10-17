@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.IO;
+using System;
 
 // static
 public static class PersistentDataPositionPractice
@@ -32,7 +34,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     private int nextIndex;                          // 다음 단어 인덱스
     private List<string> texts;                     // 메모장에서 불러온 단어 리스트
 
-    private int totalWordsTyped;                    // 입력된 단어의 수
+    private int totalCharactersTyped;               // 입력된 단어의 수
     private int maxWords;                           // 입력 할 최대 단어의 수
     private int correctWords;                       // 맞은 단어 수
     private int totalTypos;                         // 총 오타 수
@@ -48,7 +50,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
         currentIndex = -1;
         nextIndex = -1;
 
-        totalWordsTyped = 0;
+        totalCharactersTyped = 0;
         maxWords = 10;                              // 자리연습 최대 단어 수 설정
         correctWords = 0;
         totalTypos = 0;
@@ -60,35 +62,120 @@ public class TypingPracticePositionPractice : MonoBehaviour
     // 시작
     public void StartPractice()
     {
-        SetTypingLanguage();
-        LoadTextsFromFile();
-
         this.enabled = true;
     }
 
     // Awake()
     private void Awake()
     {
+        this.enabled = false;
+    }
+
+    // Start()
+    private void Start()
+    {
         typingStatistics = GetComponent<TypingStatisticsPositionPractice>();
         texts = new List<string>();
 
+        SetKeyBoard();
         SetButtons();
         SetData();
+        LoadTextsFromFile();
+        SetNextText();
         UpdateLeftText();
     }
 
-    // Update()
+    // Update
     private void Update()
     {
         if (isGameEnded || isWaiting) return;
 
-        if (Input.anyKeyDown)
+        if (PersistentDataPositionPractice.selectedType == "Korean")
         {
-            if (!string.IsNullOrEmpty(Input.inputString) && Input.inputString != "\n" && Input.inputString != "\r")
+            bool isShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
+            if (Input.anyKeyDown)
             {
-                CheckInput();
+                foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
+                {
+                    if (Input.GetKeyDown(keyCode))
+                    {
+                        string input = KeyCodeToKoreanChar(keyCode, isShiftPressed);
+                        if (!string.IsNullOrEmpty(input))
+                        {
+                            CheckInput(input);
+                        }
+                        break;
+                    }
+                }
             }
         }
+        else
+        {
+            string input = Input.inputString;
+            if (!string.IsNullOrEmpty(input) && input != "\n" && input != "\r")
+            {
+                CheckInput(input);
+            }
+        }
+        
+    }
+
+    // 영어 > 한글 강제 변환
+    private string KeyCodeToKoreanChar(KeyCode keyCode, bool isShiftPressed)
+    {
+        if (isShiftPressed)
+        {
+            switch (keyCode)
+            {
+                case KeyCode.R: return "ㄲ";     // Shift + ㄱ -> ㄲ
+                case KeyCode.E: return "ㄸ";     // Shift + ㄷ -> ㄸ
+                case KeyCode.Q: return "ㅃ";     // Shift + ㅂ -> ㅃ
+                case KeyCode.T: return "ㅆ";     // Shift + ㅅ -> ㅆ
+                case KeyCode.W: return "ㅉ";     // Shift + ㅈ -> ㅉ
+            }
+        }
+
+        switch (keyCode)
+        {
+            // 자음
+            case KeyCode.Q: return "ㅂ";         // Q -> ㅂ
+            case KeyCode.W: return "ㅈ";         // W -> ㅈ
+            case KeyCode.E: return "ㄷ";         // E -> ㄷ
+            case KeyCode.R: return "ㄱ";         // R -> ㄱ
+            case KeyCode.T: return "ㅅ";         // T -> ㅅ
+            case KeyCode.A: return "ㅁ";         // A -> ㅁ
+            case KeyCode.S: return "ㄴ";         // S -> ㄴ
+            case KeyCode.D: return "ㅇ";         // D -> ㅇ
+            case KeyCode.F: return "ㄹ";         // F -> ㄹ
+            case KeyCode.G: return "ㅎ";         // G -> ㅎ
+            case KeyCode.Z: return "ㅋ";         // Z -> ㅋ
+            case KeyCode.X: return "ㅌ";         // X -> ㅌ
+            case KeyCode.C: return "ㅊ";         // C -> ㅊ
+            case KeyCode.V: return "ㅍ";         // V -> ㅍ
+
+            // 모음
+            case KeyCode.Y: return "ㅛ";         // Y -> ㅛ
+            case KeyCode.U: return "ㅕ";         // U -> ㅕ
+            case KeyCode.I: return "ㅑ";         // I -> ㅑ
+            case KeyCode.O: return "ㅐ";         // O -> ㅐ
+            case KeyCode.P: return "ㅔ";         // P -> ㅔ
+            case KeyCode.H: return "ㅗ";         // H -> ㅗ
+            case KeyCode.J: return "ㅓ";         // J -> ㅓ
+            case KeyCode.K: return "ㅏ";         // K -> ㅏ
+            case KeyCode.L: return "ㅣ";         // L -> ㅣ
+            case KeyCode.B: return "ㅠ";         // B -> ㅠ
+            case KeyCode.N: return "ㅜ";         // N -> ㅜ
+            case KeyCode.M: return "ㅡ";         // M -> ㅡ
+
+            default: return string.Empty;
+        }
+    }
+
+    // 강제 영어 전환
+    private void SetKeyBoard()
+    {
+        GetComponent<IMEManager>().StartIME();
     }
 
     // 버튼 설정
@@ -99,25 +186,18 @@ public class TypingPracticePositionPractice : MonoBehaviour
         titleButton.onClick.AddListener(OnTitleButtonPressed);
     }
 
-    // 타이핑 언어 설정
-    private void SetTypingLanguage()
-    {
-        if (PersistentDataPositionPractice.selectedType == "English")
-        {
-            ForceEnglishIME forceEnglishIME = new ForceEnglishIME();
-            forceEnglishIME.Start();
-        }
-        else if (PersistentDataPositionPractice.selectedType == "Korean")
-        {
-            ForceKoreanIME forceKoreanIME = new ForceKoreanIME();
-            forceKoreanIME.Start();
-        }
-    }
-
     // File Load (빈 줄이나 공백 제외)
     private void LoadTextsFromFile()
     {
-        string path = Application.dataPath + "/2.Scripts/PositionPractice/Texts/" + PersistentDataPositionPractice.selectedType + ".txt";
+        string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataPositionPractice.selectedType + ".txt");
+
+//#if UNITY_EDITOR
+//        path = Application.dataPath + "/2.Scripts/PositionPractice/Texts/" + PersistentDataPositionPractice.selectedType + ".txt";
+//#else
+//    // 빌드된 환경에서 사용할 경로
+//    path = Application.dataPath + "/../PositionPractice/Texts/" + PersistentDataPositionPractice.selectedType + ".txt";
+//#endif
+
         if (System.IO.File.Exists(path))
         {
             string[] lines = System.IO.File.ReadAllLines(path);
@@ -133,8 +213,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
         {
             Debug.LogError("텍스트 파일을 찾을 수 없습니다");
         }
-
-        SetNextText();
     }
 
     // 다음 Text 설정
@@ -142,7 +220,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     {
         if (currentIndex == -1)
         {
-            currentIndex = Random.Range(0, texts.Count);
+            currentIndex = UnityEngine.Random.Range(0, texts.Count);
         }
         else
         {
@@ -151,14 +229,14 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         do
         {
-            nextIndex = Random.Range(0, texts.Count);
+            nextIndex = UnityEngine.Random.Range(0, texts.Count);
         } while (nextIndex == currentIndex);
 
         currentText = texts[currentIndex];
         displayText.text = currentText;
-        totalWordsTyped++;
+        totalCharactersTyped++;
 
-        if (totalWordsTyped < maxWords)
+        if (totalCharactersTyped < maxWords)
         {
             nextDisplayText.text = texts[nextIndex];
         }
@@ -168,13 +246,12 @@ public class TypingPracticePositionPractice : MonoBehaviour
         }
     }
 
-    // 입력 검사
-    private void CheckInput()
+    // 입력
+    private void CheckInput(string input)
     {
-        string inputKey = Input.inputString;
-        if (string.IsNullOrEmpty(inputKey)) return;
+        //Debug.Log(input);
 
-        if (inputKey == currentText)
+        if (input == currentText)
         {
             UpdateDisplayText(true);
             correctWords++;
@@ -203,7 +280,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         if (isCorrect)
         {
-            if (totalWordsTyped < maxWords)
+            if (totalCharactersTyped < maxWords)
             {
                 SetNextText();
             }
@@ -220,7 +297,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     // 정확도 Update
     private void UpdateAccuracy()
     {
-        float accuracy = (float)correctWords / (correctWords + totalTypos) * 100;
+        float accuracy = (float)correctWords / (correctWords + totalTypos) * 100f;
         typingStatistics.UpdateAccuracy(accuracy);
     }
 
@@ -246,7 +323,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     // 남은 단어 수 Update
     private void UpdateLeftText()
     {
-        leftText.text = $"{totalWordsTyped} / {maxWords}";
+        leftText.text = $"{totalCharactersTyped} / {maxWords}";
     }
 
     // Back 버튼을 눌렀을 때

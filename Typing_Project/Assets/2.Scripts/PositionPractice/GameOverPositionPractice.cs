@@ -17,8 +17,13 @@ public class GameOverPositionPractice : MonoBehaviour
     // Awake()
     private void Awake()
     {
-        typingStatistics = FindObjectOfType<TypingStatisticsPositionPractice>();
         gameOverPanel.SetActive(false);
+    }
+
+    // Start()
+    private void Start()
+    {
+        typingStatistics = FindObjectOfType<TypingStatisticsPositionPractice>();
     }
 
     // GameOverStats

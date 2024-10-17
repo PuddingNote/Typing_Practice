@@ -4276,7 +4276,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1238016189}
         m_TargetAssemblyTypeName: ButtonManagerLongSentence, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
@@ -5013,7 +5013,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1238016189}
         m_TargetAssemblyTypeName: ButtonManagerLongSentence, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
@@ -7248,7 +7248,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1238016189}
         m_TargetAssemblyTypeName: ButtonManagerLongSentence, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
@@ -7948,7 +7948,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1238016189}
         m_TargetAssemblyTypeName: ButtonManagerLongSentence, Assembly-CSharp
         m_MethodName: 
         m_Mode: 1
