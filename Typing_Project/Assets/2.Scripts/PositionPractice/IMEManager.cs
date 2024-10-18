@@ -39,7 +39,6 @@ public class IMEManager : MonoBehaviour
         {
             ImmSetConversionStatus(hIMC, IME_CMODE_ALPHANUMERIC, 0);
             ImmReleaseContext(hWnd, hIMC);
-            Debug.Log("영어 강제 전환");
         }
         else
         {

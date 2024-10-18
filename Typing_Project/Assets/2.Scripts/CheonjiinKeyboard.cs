@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class CheonjiinKeyboard : MonoBehaviour
 {
     // 상태를 추적하기 위한 전역 변수
