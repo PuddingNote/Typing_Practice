@@ -41,6 +41,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
     // ETC
     private TypingStatisticsPositionPractice typingStatistics;
+    private KeyboardManager keyboardManager;
     private bool isGameEnded;
     private bool isWaiting;
 
@@ -75,14 +76,17 @@ public class TypingPracticePositionPractice : MonoBehaviour
     private void Start()
     {
         typingStatistics = GetComponent<TypingStatisticsPositionPractice>();
+        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManager>();
         texts = new List<string>();
 
-        SetKeyBoard();
+        SetKeyBoardLanguage();
         SetButtons();
         SetData();
         LoadTextsFromFile();
         SetNextText();
         UpdateLeftText();
+
+        HighlightKey();
     }
 
     // Update
@@ -128,11 +132,16 @@ public class TypingPracticePositionPractice : MonoBehaviour
         {
             switch (keyCode)
             {
+                // 자음
                 case KeyCode.R: return "ㄲ";     // Shift + ㄱ -> ㄲ
                 case KeyCode.E: return "ㄸ";     // Shift + ㄷ -> ㄸ
                 case KeyCode.Q: return "ㅃ";     // Shift + ㅂ -> ㅃ
                 case KeyCode.T: return "ㅆ";     // Shift + ㅅ -> ㅆ
                 case KeyCode.W: return "ㅉ";     // Shift + ㅈ -> ㅉ
+
+                // 모음
+                case KeyCode.O: return "ㅒ";     // Shift + ㅐ -> ㅒ
+                case KeyCode.P: return "ㅖ";     // Shift + ㅔ -> ㅖ
             }
         }
 
@@ -172,8 +181,8 @@ public class TypingPracticePositionPractice : MonoBehaviour
         }
     }
 
-    // 강제 영어 전환
-    private void SetKeyBoard()
+    // 강제 영어타이핑 전환
+    private void SetKeyBoardLanguage()
     {
         GetComponent<IMEManager>().StartIME();
     }
@@ -191,14 +200,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     {
         string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataPositionPractice.selectedType + ".txt");
 
-//#if UNITY_EDITOR
-//        path = Application.dataPath + "/2.Scripts/PositionPractice/Texts/" + PersistentDataPositionPractice.selectedType + ".txt";
-//#else
-//    // 빌드된 환경에서 사용할 경로
-//    path = Application.dataPath + "/../PositionPractice/Texts/" + PersistentDataPositionPractice.selectedType + ".txt";
-//#endif
-
-        if (System.IO.File.Exists(path))
+        if (File.Exists(path))
         {
             string[] lines = System.IO.File.ReadAllLines(path);
             foreach (string line in lines)
@@ -236,6 +238,8 @@ public class TypingPracticePositionPractice : MonoBehaviour
         displayText.text = currentText;
         totalCharactersTyped++;
 
+        //HighlightKey();
+
         if (totalCharactersTyped < maxWords)
         {
             nextDisplayText.text = texts[nextIndex];
@@ -249,8 +253,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
     // 입력
     private void CheckInput(string input)
     {
-        //Debug.Log(input);
-
         if (input == currentText)
         {
             UpdateDisplayText(true);
@@ -268,7 +270,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         UpdateAccuracy();
         UpdateTypo();
-
         UpdateLeftText();
     }
 
@@ -280,9 +281,12 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         if (isCorrect)
         {
+            keyboardManager.ResetKeyColors();
+
             if (totalCharactersTyped < maxWords)
             {
                 SetNextText();
+                HighlightKey();
             }
             else
             {
@@ -292,6 +296,13 @@ public class TypingPracticePositionPractice : MonoBehaviour
         }
 
         isWaiting = false;
+    }
+
+    // 입력할 키 강조
+    private void HighlightKey()
+    {
+        string highlightText = currentText;
+        keyboardManager.HighlightKey(highlightText);
     }
 
     // 정확도 Update
