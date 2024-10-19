@@ -14,11 +14,15 @@ public class SelectTitleLongSentence : MonoBehaviour
 
     // Variables
     [HideInInspector] public string selectedTitle;
+
+    // ETC
+    private KeyboardManagerLongSentence keyboardManager;
     private CountDown countDown;
 
     // Awake()
     private void Awake()
     {
+        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManagerLongSentence>();
         countDown = GetComponent<CountDown>();
 
         // 언어 선택에 따른 버튼 활성화
@@ -53,6 +57,7 @@ public class SelectTitleLongSentence : MonoBehaviour
         PersistentDataLongSentence.selectedTitle = title;
         selectedTitle = title;
         selectTitlePanel.SetActive(false);
+        keyboardManager.StartPractice();
 
         StartCountdown();
     }

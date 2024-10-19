@@ -41,7 +41,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
     // ETC
     private TypingStatisticsPositionPractice typingStatistics;
-    private KeyboardManager keyboardManager;
+    private KeyboardManagerPositionPractice keyboardManager;
     private bool isGameEnded;
     private bool isWaiting;
 
@@ -76,7 +76,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     private void Start()
     {
         typingStatistics = GetComponent<TypingStatisticsPositionPractice>();
-        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManager>();
+        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManagerPositionPractice>();
         texts = new List<string>();
 
         SetKeyBoardLanguage();

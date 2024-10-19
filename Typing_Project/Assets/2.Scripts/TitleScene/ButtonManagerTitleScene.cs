@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using TMPro;
 
 // Button Info
@@ -11,6 +12,7 @@ public class ButtonInfo
 {
     public string buttonText;
     public string sceneToLoad;
+    [TextArea(3, 10)] public string explainText;
 }
 
 public class ButtonManagerTitleScene : MonoBehaviour
@@ -18,13 +20,7 @@ public class ButtonManagerTitleScene : MonoBehaviour
     // UI
     public Button[] buttons;
     public ButtonInfo[] buttonsInfo;
-
-    // Color Variables
-    private Color defaultColor = Color.white;
-    private Color highlightColor = new Color(219f / 255f, 234f / 255f, 254f / 255f);
-    private Color clickedColor = new Color(219f / 255f, 234f / 255f, 254f / 255f);
-    private Color textDefaultColor = new Color(0f, 0f, 1f, 170f / 255f);
-    private Color borderColor = new Color(0f, 0f, 1f, 170f / 255f);
+    public TextMeshProUGUI explainTextUI;
 
     // Awake()
     private void Awake()
@@ -34,61 +30,44 @@ public class ButtonManagerTitleScene : MonoBehaviour
             int index = i;
             var button = buttons[i];
 
-            // Set Buttons
             TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
             buttonText.text = buttonsInfo[i].buttonText;
-            buttonText.color = textDefaultColor;
 
-            var buttonImage = button.GetComponent<Image>();
-            buttonImage.color = defaultColor;
+            button.onClick.AddListener(() => OnButtonClick(buttonsInfo[index].sceneToLoad));
 
-            var buttonOutline = button.GetComponent<Outline>();
-            if (buttonOutline != null)
-            {
-                buttonOutline.effectColor = borderColor;
-                buttonOutline.effectDistance = new Vector2(2, 2);
-            }
+            // 마우스 하이라이트(포인터 진입) 이벤트
+            EventTrigger trigger = button.gameObject.AddComponent<EventTrigger>();
 
-            // 버튼 클릭 시 해당 씬으로 이동하는 리스너 등록
-            // 하이라이트 및 클릭 이벤트 처리
-            button.onClick.AddListener(() => OnButtonClick(buttonsInfo[index].sceneToLoad, buttonImage));
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((eventData) => OnButtonHighlighted(buttonsInfo[index].explainText));
+            trigger.triggers.Add(pointerEnter);
 
-            var buttonEventTrigger = button.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-
-            var entryHighlight = new UnityEngine.EventSystems.EventTrigger.Entry
-            {
-                eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter
-            };
-            entryHighlight.callback.AddListener((eventData) => OnButtonHighlight(true, buttonImage, buttonText));
-            buttonEventTrigger.triggers.Add(entryHighlight);
-
-            var entryUnhighlight = new UnityEngine.EventSystems.EventTrigger.Entry
-            {
-                eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit
-            };
-            entryUnhighlight.callback.AddListener((eventData) => OnButtonHighlight(false, buttonImage, buttonText));
-            buttonEventTrigger.triggers.Add(entryUnhighlight);
+            // 마우스가 버튼에서 벗어날 때
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((eventData) => OnButtonExit());
+            trigger.triggers.Add(pointerExit);
         }
     }
 
     // 버튼 클릭
-    private void OnButtonClick(string sceneToLoad, Image buttonImage)
+    private void OnButtonClick(string sceneToLoad)
     {
-        buttonImage.color = clickedColor;
         SceneManager.LoadSceneAsync(sceneToLoad);
     }
 
-    // 버튼 하이라이트
-    private void OnButtonHighlight(bool isHighlighted, Image buttonImage, TextMeshProUGUI buttonText)
+    // 버튼 하이라이트 시 설명 표시
+    private void OnButtonHighlighted(string explanationText)
     {
-        if (isHighlighted)
-        {
-            buttonImage.color = highlightColor;
-        }
-        else
-        {
-            buttonImage.color = defaultColor;
-        }
+        explainTextUI.text = explanationText;
+        explainTextUI.ForceMeshUpdate();
+    }
+
+    // 버튼에서 마우스 벗어날 시 설명 비우기
+    private void OnButtonExit()
+    {
+        explainTextUI.text = "";
     }
 
     // 종료

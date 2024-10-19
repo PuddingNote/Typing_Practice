@@ -16,14 +16,14 @@ public class SelectTypePositionPractice : MonoBehaviour
     // ETC
     private TypingPracticePositionPractice typingPractice;
     private TypingStatisticsPositionPractice typingStatistics;
-    private KeyboardManager keyboardManager;
+    private KeyboardManagerPositionPractice keyboardManager;
 
     // Awake()
     private void Awake()
     {
         typingPractice = GetComponent<TypingPracticePositionPractice>();
         typingStatistics = GetComponent<TypingStatisticsPositionPractice>();
-        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManager>();
+        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManagerPositionPractice>();
 
         englishButton.onClick.AddListener(() => SelectType("English"));
         koreanButton.onClick.AddListener(() => SelectType("Korean"));

@@ -13,6 +13,7 @@ public class SelectLanguageShortSentence : MonoBehaviour
     public Button koreanButton;
 
     // ETC
+    private KeyboardManagerShortSentence keyboardManager;
     private CountDown countDown;
 
     // Start()
@@ -24,6 +25,7 @@ public class SelectLanguageShortSentence : MonoBehaviour
     // Awake()
     private void Awake()
     {
+        keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManagerShortSentence>();
         countDown = GetComponent<CountDown>();
 
         englishButton.onClick.AddListener(() => SelectLanguage("English"));
@@ -35,6 +37,7 @@ public class SelectLanguageShortSentence : MonoBehaviour
     {
         PersistentDataShortSentence.selectedLanguage = language;
         languagePanel.SetActive(false);
+        keyboardManager.StartPractice();
 
         StartCountdown();
     }

@@ -38,7 +38,8 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     private int totalWordsTyped;                    // 입력된 문장의 수
     private int maxWords;                           // 입력 할 최대 문장의 수
     private int correctTypedChars;                  // 올바르게 입력된 문자 수
-    private int totalTypos;                         // 총 오타 수
+    private int totalTypos;                         // 총 오타 문자 수
+    private int totalInput;                         // 총 입력 수
 
     // ETC
     private TypingStatisticsShortSentence typingStatistics;
@@ -55,6 +56,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         maxWords = 10;                              // 단문연습 최대 문장 수 설정
         correctTypedChars = 0;
         totalTypos = 0;
+        totalInput = 0;
 
         isGameEnded = false;
         isPaused = false;
@@ -84,6 +86,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         SetInputfield();
         LoadTextsFromFile();
         SetNextText();
+        UpdateLeftText();
         inputField.ActivateInputField();
 
         inputField.onValueChanged.AddListener(delegate { CheckInput(); });
@@ -99,12 +102,13 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
             inputField.ActivateInputField();
         }
 
-        UpdateCPM(false);
         if (Input.GetKeyDown(KeyCode.Return))
         {
             OnEnterPressed();
             UpdateCPM(true);
         }
+
+        UpdateCPM(false);
     }
 
     // 버튼 설정
@@ -133,12 +137,6 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     private void LoadTextsFromFile()
     {
         string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataShortSentence.selectedLanguage + ".txt");
-
-//#if UNITY_EDITOR
-//        path = Application.dataPath + "/2.Scripts/ShortSentence/Texts/" + PersistentDataShortSentence.selectedLanguage + ".txt";
-//#else
-//    path = Application.dataPath + "/../ShortSentence/Texts/" + PersistentDataShortSentence.selectedLanguage + ".txt";
-//#endif
 
         if (File.Exists(path))
         {
@@ -203,10 +201,12 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
                 if (typedText[i] == currentText[i])
                 {
                     correctCharsInSentence++;
+                    totalInput++;
                 }
                 else
                 {
                     typoWords++;
+                    totalInput++;
                 }
             }
         }
@@ -261,6 +261,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         }
         else
         {
+            UpdateCPM(true);
             UpdateAccuracy(true, correctCharsInSentence, typoWords);
             EndPractice();
         }
@@ -269,8 +270,8 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     // 타수 Update
     private void UpdateCPM(bool isEnter)
     {
-        float elapsedMinutes = typingStatistics.elapsedTime / 60f;
-        float cpm = (correctTypedChars + totalTypos) / elapsedMinutes;
+        float elapsedTime = typingStatistics.elapsedTime / 60f;
+        float cpm = (totalInput / elapsedTime) / 5;
 
         if (isEnter)
         {
