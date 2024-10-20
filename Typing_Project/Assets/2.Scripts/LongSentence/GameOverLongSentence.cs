@@ -8,7 +8,7 @@ public class GameOverLongSentence : MonoBehaviour
     // UI
     public GameObject gameOverPanel;
     public TextMeshProUGUI timeText;                // 시간
-    public TextMeshProUGUI highestCpmText;          // 최고 타수
+    public TextMeshProUGUI cpmText;                 // 타수
     public TextMeshProUGUI accuracyText;            // 정확도
     public TextMeshProUGUI typoCountText;           // 오타
 
@@ -33,8 +33,8 @@ public class GameOverLongSentence : MonoBehaviour
         int seconds = Mathf.FloorToInt(elapsedTime % 60);
         timeText.text = $"{minutes:D2}:{seconds:D2}";
 
-        // 최고타수
-        highestCpmText.text = typingStatistics.highestCpmText.text + "타";
+        // 타수
+        cpmText.text = typingStatistics.cpmText.text + "타";
 
         // 정확도
         accuracyText.text = typingStatistics.accuracyText.text + "%";

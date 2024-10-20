@@ -289,12 +289,21 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
     // Á¤È®µµ Update
     private void UpdateAccuracy(bool isEnter, int correctCharsInSentence, int typoWords)
     {
+        float accuracy;
+
         if (isEnter)
         {
             correctTypedChars += correctCharsInSentence;
         }
 
-        float accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
+        if (totalInput > 0)
+        {
+            accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
+        }
+        else
+        {
+            accuracy = 0;
+        }
         typingStatistics.UpdateAccuracy(accuracy);
     }
 

@@ -236,17 +236,16 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         currentText = texts[currentIndex];
         displayText.text = currentText;
-        totalCharactersTyped++;
 
         //HighlightKey();
 
-        if (totalCharactersTyped < maxWords)
+        if (totalCharactersTyped == (maxWords - 1))
         {
-            nextDisplayText.text = texts[nextIndex];
+            nextDisplayText.text = "";
         }
         else
         {
-            nextDisplayText.text = "";
+            nextDisplayText.text = texts[nextIndex];
         }
     }
 
@@ -257,6 +256,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
         {
             UpdateDisplayText(true);
             correctWords++;
+            totalCharactersTyped++;
 
             StartCoroutine(WaitAndSetNextText(true));
         }
@@ -270,7 +270,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         UpdateAccuracy();
         UpdateTypo();
-        UpdateLeftText();
     }
 
     // 입력시 0.3초 대기 후 다음 텍스트 설정
@@ -286,6 +285,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
             if (totalCharactersTyped < maxWords)
             {
                 SetNextText();
+                UpdateLeftText();
                 HighlightKey();
             }
             else
@@ -334,7 +334,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     // 남은 단어 수 Update
     private void UpdateLeftText()
     {
-        leftText.text = $"{totalCharactersTyped} / {maxWords}";
+        leftText.text = $"{totalCharactersTyped + 1} / {maxWords}";
     }
 
     // Back 버튼을 눌렀을 때

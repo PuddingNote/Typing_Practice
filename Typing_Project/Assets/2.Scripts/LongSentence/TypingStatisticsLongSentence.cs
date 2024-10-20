@@ -8,13 +8,11 @@ public class TypingStatisticsLongSentence : MonoBehaviour, ITypingStatistics
     // UI
     public TextMeshProUGUI timeText;                // 시간
     public TextMeshProUGUI cpmText;                 // 타수
-    public TextMeshProUGUI highestCpmText;          // 최고 타수
     public TextMeshProUGUI accuracyText;            // 정확도
     public TextMeshProUGUI typoCountText;           // 오타 개수
 
     // Typing Stats
     [HideInInspector] public float elapsedTime;     // 시간 (초)
-    private int highestCpm;                         // 최고 타수
 
     // ETC
     private bool isPracticeStarted = false;         // 시작 여부
@@ -33,7 +31,6 @@ public class TypingStatisticsLongSentence : MonoBehaviour, ITypingStatistics
     private void ResetStatistics()
     {
         elapsedTime = 0f;
-        highestCpm = 0;
     }
 
     // Update()
@@ -59,16 +56,6 @@ public class TypingStatisticsLongSentence : MonoBehaviour, ITypingStatistics
     public void UpdateCPM(float currentCpm)
     {
         cpmText.text = $"{(int)currentCpm}";
-    }
-
-    // 최고타수 Update
-    public void UpdateHighestCPM(int currentCpm)
-    {
-        if (currentCpm > highestCpm)
-        {
-            highestCpm = currentCpm;
-            highestCpmText.text = $"{highestCpm}";
-        }
     }
 
     // 정확도 Update

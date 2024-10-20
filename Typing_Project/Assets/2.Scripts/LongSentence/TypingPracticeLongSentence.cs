@@ -106,10 +106,9 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         if (Input.GetKeyDown(KeyCode.Return))
         {
             OnEnterPressed();
-            UpdateCPM(true);
         }
 
-        UpdateCPM(false);
+        UpdateCPM();
     }
 
     // 버튼 설정
@@ -197,7 +196,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
                 }
                 else
                 {
-                    totalTypos++;
+                    typoWords++;
                     totalInput++;
                 }
             }
@@ -253,40 +252,39 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         }
         else
         {
-            UpdateCPM(true);
+            UpdateCPM();
             UpdateAccuracy(true, correctCharsInSentence, typoWords);
             EndPractice();
         }
     }
 
     // 타수 Update
-    private void UpdateCPM(bool isEnter)
+    private void UpdateCPM()
     {
         float elapsedTime = typingStatistics.elapsedTime / 60f;
         float cpm = (totalInput / elapsedTime) / 5;
 
-        if (isEnter)
-        {
-            UpdateHighestCPM(cpm);
-        }
         typingStatistics.UpdateCPM(cpm);
-    }
-
-    // 최대타수 Update
-    private void UpdateHighestCPM(float currentCpm)
-    {
-        typingStatistics.UpdateHighestCPM((int)currentCpm);
     }
 
     // 정확도 Update
     private void UpdateAccuracy(bool isEnter, int correctCharsInSentence, int typoWords)
     {
+        float accuracy;
+
         if (isEnter)
         {
             correctTypedChars += correctCharsInSentence;
         }
 
-        float accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
+        if (totalInput > 0)
+        {
+            accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
+        }
+        else
+        {
+            accuracy = 0;
+        }
         typingStatistics.UpdateAccuracy(accuracy);
     }
 
