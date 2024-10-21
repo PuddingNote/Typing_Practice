@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/0.Scenes/PositionPractice.unity
     guid: 06f170326a8df6249addb3e6f9e200c2
   - enabled: 1
+    path: Assets/0.Scenes/WordPractice.unity
+    guid: 0f1ae0ffea4355649bc77be93e33c91f
+  - enabled: 1
     path: Assets/0.Scenes/ShortSentence.unity
     guid: 3f3928e4ab0f0af4e95bca675862f6c1
   - enabled: 1

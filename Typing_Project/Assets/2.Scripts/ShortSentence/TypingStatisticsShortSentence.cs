@@ -18,7 +18,7 @@ public class TypingStatisticsShortSentence : MonoBehaviour, ITypingStatistics
 
     // ETC
     private bool isPracticeStarted = false;         // 시작 여부
-    private bool isPracticePaused = false;          // 타수 계산 멈춤 여부
+    private bool isPracticePaused = false;          // 멈춤 여부
 
     // 시작
     public void StartPractice()
@@ -59,6 +59,12 @@ public class TypingStatisticsShortSentence : MonoBehaviour, ITypingStatistics
     public void UpdateCPM(float currentCpm)
     {
         cpmText.text = $"{(int)currentCpm}";
+    }
+
+    // 타수 Reset
+    public void ResetCPM()
+    {
+        cpmText.text = $"{0}";
     }
 
     // 최고타수 Update

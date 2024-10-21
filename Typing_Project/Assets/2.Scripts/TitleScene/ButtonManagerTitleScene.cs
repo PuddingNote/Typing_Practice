@@ -25,6 +25,8 @@ public class ButtonManagerTitleScene : MonoBehaviour
     // Awake()
     private void Awake()
     {
+        explainTextUI.text = "타자 연습 프로그램";
+
         for (int i = 0; i < buttons.Length; i++)
         {
             int index = i;
@@ -35,25 +37,22 @@ public class ButtonManagerTitleScene : MonoBehaviour
 
             button.onClick.AddListener(() => OnButtonClick(buttonsInfo[index].sceneToLoad));
 
-            // 마우스 하이라이트(포인터 진입) 이벤트
             EventTrigger trigger = button.gameObject.AddComponent<EventTrigger>();
 
             EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
             pointerEnter.eventID = EventTriggerType.PointerEnter;
             pointerEnter.callback.AddListener((eventData) => OnButtonHighlighted(buttonsInfo[index].explainText));
             trigger.triggers.Add(pointerEnter);
-
-            // 마우스가 버튼에서 벗어날 때
-            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
-            pointerExit.eventID = EventTriggerType.PointerExit;
-            pointerExit.callback.AddListener((eventData) => OnButtonExit());
-            trigger.triggers.Add(pointerExit);
         }
     }
 
     // 버튼 클릭
     private void OnButtonClick(string sceneToLoad)
     {
+        if (sceneToLoad == "")
+        {
+            EndGame();
+        }
         SceneManager.LoadSceneAsync(sceneToLoad);
     }
 
@@ -62,12 +61,6 @@ public class ButtonManagerTitleScene : MonoBehaviour
     {
         explainTextUI.text = explanationText;
         explainTextUI.ForceMeshUpdate();
-    }
-
-    // 버튼에서 마우스 벗어날 시 설명 비우기
-    private void OnButtonExit()
-    {
-        explainTextUI.text = "";
     }
 
     // 종료

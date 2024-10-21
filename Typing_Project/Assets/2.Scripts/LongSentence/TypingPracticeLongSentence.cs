@@ -107,7 +107,6 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         {
             OnEnterPressed();
         }
-
         UpdateCPM();
     }
 
@@ -122,13 +121,6 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     // Inputfield 설정
     private void SetInputfield()
     {
-        var background = inputField.GetComponentInChildren<Image>();
-        background.color = Color.white;
-
-        var outline = inputField.gameObject.AddComponent<Outline>();
-        outline.effectColor = new Color(93f / 255f, 158f / 255f, 235f / 255f, 170f / 255f);
-        outline.effectDistance = new Vector2(2, 2);
-
         inputField.contentType = TMP_InputField.ContentType.Standard;
         inputField.lineType = TMP_InputField.LineType.SingleLine;
     }
@@ -178,7 +170,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         }
     }
 
-    // Inputfield(입력) 검사
+    // 입력 검사
     private void CheckInput()
     {
         string typedText = inputField.text;
@@ -245,6 +237,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
 
         if (totalWordsTyped < maxWords)
         {
+            UpdateCPM();
             UpdateAccuracy(true, correctCharsInSentence, typoWords);
             UpdateTypo(true, typoWords);
             UpdateLeftText();
@@ -262,7 +255,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     private void UpdateCPM()
     {
         float elapsedTime = typingStatistics.elapsedTime / 60f;
-        float cpm = (totalInput / elapsedTime) / 5;
+        float cpm = (float)(totalInput / (elapsedTime * 5));
 
         typingStatistics.UpdateCPM(cpm);
     }
@@ -277,14 +270,16 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
             correctTypedChars += correctCharsInSentence;
         }
 
-        if (totalInput > 0)
+        int totalCount = correctTypedChars + correctCharsInSentence + totalTypos + typoWords;
+        if (totalCount > 0)
         {
-            accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
+            accuracy = (float)(correctTypedChars + correctCharsInSentence) / totalCount * 100f;
         }
         else
         {
-            accuracy = 0;
+            accuracy = 0f;
         }
+
         typingStatistics.UpdateAccuracy(accuracy);
     }
 

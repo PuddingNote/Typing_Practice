@@ -64,4 +64,5 @@ public class ResolutionController : MonoBehaviour
             Screen.SetResolution(newWidth, (int)newSize.y, false);
         }
     }
+
 }

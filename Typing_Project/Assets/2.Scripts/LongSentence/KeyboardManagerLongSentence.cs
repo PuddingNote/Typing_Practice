@@ -55,7 +55,6 @@ public class KeyboardManagerLongSentence : MonoBehaviour
     // ETC
     private TypingPracticeLongSentence typingPractice;
 
-
     // Ω√¿€
     public void StartPractice()
     {
