@@ -17,7 +17,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     {
         "기타", "영문", "한글",
         "ESC", "R", "U", "D",
-        "Alt", "H", "A", "W",
+        "RAlt", "H", "A", "W",
         "G", "N", "E", "Y",
         "V", "T", "O", "L",
         "-", "S", "I", "M",
@@ -27,17 +27,27 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     private string[] englishSubCharacters =
     {
         "", "P", "C", "K",
-        "", "B", "", "X",
+        "LAlt", "B", "", "X",
         "Q", "F", "", ";",
         "Z", "", "", "'",
         "=", "", "J", "/",
+        "Win"
     };
+    //private string[] englishSubCharacters =
+    //{
+    //    "", "P", "C", "K",
+    //    "LAlt", "V", "", "X",
+    //    "Q", "F", "", ";",
+    //    "Z", "", "", "'",
+    //    "=", "", "J", "/",
+    //    "Win"
+    //};
 
     private string[] koreanCharacters = 
     { 
         "기타", "영문", "한글", 
         "ESC", "ㅂ", "ㄴ", "ㅌ", 
-        "Alt", "ㅈ", "ㅣ", "ㄷ",
+        "RAlt", "ㅈ", "ㅣ", "ㄷ",
         "ㅍ", "ㅇ", "ㆍ", "ㅁ",
         "ㅋ", "ㄱ", "ㅡ", "ㄹ",
         "-", "ㅎ", "ㅅ", "ㅊ",
@@ -47,19 +57,20 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     private string[] koreanSubCharacters =
     {
         "", "", "", "",
-        "", "", "", "",
+        "LAlt", "", "", "",
         "", "", "", ";",
         "", "", "", "'",
         "=", "", "", "/",
+        "Win"
     };
-    private string[] koreanShiftCharacters =
-    {
-        "", "ㅃ", "", "",
-        "", "ㅉ", "", "ㄸ",
-        "", "", "", "",
-        "", "ㄲ", "", "",
-        "", "", "ㅆ", "",
-    };
+    //private string[] koreanShiftCharacters =
+    //{
+    //    "", "ㅃ", "", "",
+    //    "", "ㅉ", "", "ㄸ",
+    //    "", "", "", "",
+    //    "", "ㄲ", "", "",
+    //    "", "", "ㅆ", ""
+    //};
 
     private string[] otherCharacters =
     {
@@ -79,6 +90,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         "F3", "F8", "", "",
         "F4", "F9", "\\", "'",
         "F5", "F10", "", "",
+        "Win"
     };
 
     // Key
@@ -127,11 +139,11 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         { "ㅍ", new string[] { "ㅍ" } },
         { "ㅅ", new string[] { "ㅅ" } },
         { "ㅎ", new string[] { "ㅎ" } },
-        { "ㅃ", new string[] { "ㅂ", "ㅂ" } },
-        { "ㄸ", new string[] { "ㄷ", "ㄷ" } },
-        { "ㅉ", new string[] { "ㅈ", "ㅈ" } },
-        { "ㄲ", new string[] { "ㄱ", "ㄱ" } },
-        { "ㅆ", new string[] { "ㅅ", "ㅅ" } }
+        { "ㅃ", new string[] { "Shift", "ㅂ" } },
+        { "ㄸ", new string[] { "Shift", "ㄷ" } },
+        { "ㅉ", new string[] { "Shift", "ㅈ" } },
+        { "ㄲ", new string[] { "Shift", "ㄱ" } },
+        { "ㅆ", new string[] { "Shift", "ㅅ" } }
     };
     Dictionary<string, string[]> chonjiinVowels = new Dictionary<string, string[]>()
     {
@@ -142,7 +154,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         { "ㅗ", new string[] { "ㆍ", "ㅡ" } },
         { "ㅛ", new string[] { "ㆍ", "ㆍ", "ㅡ" } },
         { "ㅜ", new string[] { "ㅡ", "ㆍ" } },
-        { "ㅠ", new string[] {  "ㅡ", "ㆍ", "ㆍ" } },
+        { "ㅠ", new string[] { "ㅡ", "ㆍ", "ㆍ" } },
         { "ㅡ", new string[] { "ㅡ" } },
         { "ㅣ", new string[] { "ㅣ" } },
         { "ㅐ", new string[] { "ㅣ", "ㆍ", "ㅣ" } },
@@ -153,7 +165,6 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
 
     // ETC
     private TypingPracticePositionPractice typingPractice;
-
 
     // 시작
     public void StartPractice()
@@ -336,16 +347,16 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
                 }
             }
             // Shift (이게 쌍자음인데 일단 넣어둠 : 쓸일없음)
-            for (int i = 0; i < koreanShiftCharacters.Length; i++)
-            {
-                if (koreanShiftCharacters[i] == highlightText)
-                {
-                    ColorBlock colorBlock = keyboardButtons[i + 3].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i + 3].colors = colorBlock;
-                    break;
-                }
-            }
+            //for (int i = 0; i < koreanShiftCharacters.Length; i++)
+            //{
+            //    if (koreanShiftCharacters[i] == highlightText)
+            //    {
+            //        ColorBlock colorBlock = keyboardButtons[i + 3].colors;
+            //        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+            //        keyboardButtons[i + 3].colors = colorBlock;
+            //        break;
+            //    }
+            //}
             // Main
             for (int i = 0; i < koreanCharacters.Length; i++)
             {

@@ -16,7 +16,7 @@ public class KeyboardManagerShortSentence : MonoBehaviour
     {
         "기타", "영문", "한글",
         "ESC", "R", "U", "D",
-        "Alt", "H", "A", "W",
+        "RAlt", "H", "A", "W",
         "G", "N", "E", "Y",
         "V", "T", "O", "L",
         "-", "S", "I", "M",
@@ -26,17 +26,27 @@ public class KeyboardManagerShortSentence : MonoBehaviour
     private string[] englishSubCharacters =
     {
         "", "P", "C", "K",
-        "", "B", "", "X",
+        "LAlt", "B", "", "X",
         "Q", "F", "", ";",
         "Z", "", "", "'",
         "=", "", "J", "/",
+        "Win"
     };
+    //private string[] englishSubCharacters =
+    //{
+    //    "", "P", "C", "K",
+    //    "LAlt", "V", "", "X",
+    //    "Q", "F", "", ";",
+    //    "Z", "", "", "'",
+    //    "=", "", "J", "/",
+    //    "Win"
+    //};
 
-    private string[] koreanCharacters = 
-    { 
-        "기타", "영문", "한글", 
-        "ESC", "ㅂ", "ㄴ", "ㅌ", 
-        "Alt", "ㅈ", "ㅣ", "ㄷ",
+    private string[] koreanCharacters =
+    {
+        "기타", "영문", "한글",
+        "ESC", "ㅂ", "ㄴ", "ㅌ",
+        "RAlt", "ㅈ", "ㅣ", "ㄷ",
         "ㅍ", "ㅇ", "ㆍ", "ㅁ",
         "ㅋ", "ㄱ", "ㅡ", "ㄹ",
         "-", "ㅎ", "ㅅ", "ㅊ",
@@ -46,10 +56,11 @@ public class KeyboardManagerShortSentence : MonoBehaviour
     private string[] koreanSubCharacters =
     {
         "", "", "", "",
-        "", "", "", "",
+        "LAlt", "", "", "",
         "", "", "", ";",
         "", "", "", "'",
         "=", "", "", "/",
+        "Win"
     };
 
     // ETC

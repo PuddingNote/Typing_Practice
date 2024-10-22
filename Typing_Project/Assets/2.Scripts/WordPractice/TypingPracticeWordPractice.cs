@@ -266,14 +266,16 @@ public class TypingPracticeWordPractice : MonoBehaviour, ITypingPractice
             correctTypedChars += correctCharsInSentence;
         }
 
-        if (totalInput > 0)
+        int totalCount = correctTypedChars + correctCharsInSentence + totalTypos + typoWords;
+        if (totalCount > 0)
         {
-            accuracy = (float)(correctTypedChars + correctCharsInSentence) / (correctTypedChars + correctCharsInSentence + totalTypos + typoWords) * 100f;
+            accuracy = (float)(correctTypedChars + correctCharsInSentence) / totalCount * 100f;
         }
         else
         {
-            accuracy = 0;
+            accuracy = 0f;
         }
+
         typingStatistics.UpdateAccuracy(accuracy);
     }
 

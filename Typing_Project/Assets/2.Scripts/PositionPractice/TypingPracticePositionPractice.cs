@@ -122,7 +122,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
                 CheckInput(input);
             }
         }
-        
+
     }
 
     // 영어 > 한글 강제 변환
@@ -236,8 +236,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         currentText = texts[currentIndex];
         displayText.text = currentText;
-
-        //HighlightKey();
 
         if (totalCharactersTyped == (maxWords - 1))
         {
