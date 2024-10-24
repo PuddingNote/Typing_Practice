@@ -145,7 +145,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         { "丐", new string[] { "Shift", "丑" } },
         { "介", new string[] { "Shift", "今" } }
     };
-    Dictionary<string, string[]> chonjiinVowels = new Dictionary<string, string[]>()
+    public Dictionary<string, string[]> chonjiinVowels = new Dictionary<string, string[]>()
     {
         { "凶", new string[] { "太", "王" } },
         { "切", new string[] { "太", "王", "王" } },
@@ -158,10 +158,28 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         { "天", new string[] { "天" } },
         { "太", new string[] { "太" } },
         { "分", new string[] { "太", "王", "太" } },
-        { "勾", new string[] { "王", "太", "太" } },
         { "刈", new string[] { "太", "王", "王", "太" } },
+        { "勾", new string[] { "王", "太", "太" } },
         { "化", new string[] { "王", "王", "太", "太" } }
     };
+    public Dictionary<string, string[]> chonjiinVowelsInputCheck = new Dictionary<string, string[]>()
+    {
+        { "凶", new string[] { "太", "凶" } },
+        { "切", new string[] { "太", "凶", "切" } },
+        { "勻", new string[] { "勻" } },
+        { "勿", new string[] { "勿" } },
+        { "匹", new string[] { "匹" } },
+        { "卞", new string[] { "卞" } },
+        { "厄", new string[] { "天", "厄" } },
+        { "壬", new string[] { "天", "厄", "壬" } },
+        { "天", new string[] { "天" } },
+        { "太", new string[] { "太" } },
+        { "分", new string[] { "太", "凶", "分" } },
+        { "刈", new string[] { "太", "凶", "切", "刈" } },
+        { "勾", new string[] { "勻", "勾" } },
+        { "化", new string[] { "勿", "化" } }
+    };
+
 
     // ETC
     private TypingPracticePositionPractice typingPractice;
