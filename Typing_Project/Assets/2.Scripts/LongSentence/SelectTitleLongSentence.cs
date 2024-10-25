@@ -6,22 +6,28 @@ using UnityEngine.UI;
 public class SelectTitleLongSentence : MonoBehaviour
 {
     // UI
+    public GameObject languagePanel;
     public GameObject selectTitlePanel;
 
     // Buttons
     public List<Button> englishChapterButtons;
     public List<Button> koreanChapterButtons;
 
+    public Button backToLanguageButtonOnSelectTitlePanel;
+    public Button backToTitleButtonOnSelectTitlePanel;
+
     // Variables
     [HideInInspector] public string selectedTitle;
 
     // ETC
+    private ButtonManagerLongSentence buttonManager;
     private KeyboardManagerLongSentence keyboardManager;
     private CountDown countDown;
 
     // Awake()
     private void Awake()
     {
+        buttonManager = GameObject.Find("ButtonManager").GetComponent<ButtonManagerLongSentence>();
         keyboardManager = GameObject.Find("KeyboardManager").GetComponent<KeyboardManagerLongSentence>();
         countDown = GetComponent<CountDown>();
 
@@ -49,6 +55,27 @@ public class SelectTitleLongSentence : MonoBehaviour
             string buttonTitle = button.name;
             button.onClick.AddListener(() => SelectTitle(buttonTitle));
         }
+
+        backToLanguageButtonOnSelectTitlePanel.onClick.AddListener(() => GoBackToLanguagePanel());
+        backToTitleButtonOnSelectTitlePanel.onClick.AddListener(() => buttonManager.GoTitleScene());
+    }
+
+    // 활성화할 버튼 리스트
+    private void ActivateButtons(List<Button> buttons)
+    {
+        foreach (var button in buttons)
+        {
+            button.gameObject.SetActive(true);
+        }
+    }
+
+    // 비활성화할 버튼 리스트
+    private void DeactivateButtons(List<Button> buttons)
+    {
+        foreach (var button in buttons)
+        {
+            button.gameObject.SetActive(false);
+        }
     }
 
     // 긴글 선택
@@ -75,21 +102,10 @@ public class SelectTitleLongSentence : MonoBehaviour
         }
     }
 
-    // 활성화할 버튼 리스트
-    private void ActivateButtons(List<Button> buttons)
+    // Back
+    private void GoBackToLanguagePanel()
     {
-        foreach (var button in buttons)
-        {
-            button.gameObject.SetActive(true);
-        }
-    }
-
-    // 비활성화할 버튼 리스트
-    private void DeactivateButtons(List<Button> buttons)
-    {
-        foreach (var button in buttons)
-        {
-            button.gameObject.SetActive(false);
-        }
+        selectTitlePanel.SetActive(false);
+        languagePanel.SetActive(true);
     }
 }

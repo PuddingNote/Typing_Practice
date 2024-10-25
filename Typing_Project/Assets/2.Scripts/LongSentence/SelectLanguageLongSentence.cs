@@ -13,9 +13,14 @@ public class SelectLanguageLongSentence : MonoBehaviour
     public Button englishButton;
     public Button koreanButton;
 
+    public Button backToTitleButtonOnLanguagePanel;
+
     // Chapters UI Panels
     public GameObject englishPanel;
     public GameObject koreanPanel;
+
+    // ETC
+    private ButtonManagerLongSentence buttonManager;
 
     // Start()
     private void Start()
@@ -29,8 +34,11 @@ public class SelectLanguageLongSentence : MonoBehaviour
     // Awake()
     private void Awake()
     {
+        buttonManager = GameObject.Find("ButtonManager").GetComponent<ButtonManagerLongSentence>();
+
         englishButton.onClick.AddListener(() => SelectLanguage("English"));
         koreanButton.onClick.AddListener(() => SelectLanguage("Korean"));
+        backToTitleButtonOnLanguagePanel.onClick.AddListener(() => buttonManager.GoTitleScene());
     }
 
     // 언어 선택에 따른 처리

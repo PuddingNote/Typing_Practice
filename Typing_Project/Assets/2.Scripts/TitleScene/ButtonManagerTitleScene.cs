@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using TMPro;
+using DG.Tweening;
 
 // Button Info
 [System.Serializable]
@@ -39,10 +40,17 @@ public class ButtonManagerTitleScene : MonoBehaviour
 
             EventTrigger trigger = button.gameObject.AddComponent<EventTrigger>();
 
+            // 버튼 하이라이트시
             EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
             pointerEnter.eventID = EventTriggerType.PointerEnter;
-            pointerEnter.callback.AddListener((eventData) => OnButtonHighlighted(buttonsInfo[index].explainText));
+            pointerEnter.callback.AddListener((eventData) => OnButtonHighlighted(button, buttonsInfo[index].explainText));
             trigger.triggers.Add(pointerEnter);
+
+            // 버튼 하이라이트 벗어났을 시
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((eventData) => OnButtonUnhighlighted(button));
+            trigger.triggers.Add(pointerExit);
         }
     }
 
@@ -56,11 +64,23 @@ public class ButtonManagerTitleScene : MonoBehaviour
         SceneManager.LoadSceneAsync(sceneToLoad);
     }
 
-    // 버튼 하이라이트 시 설명 표시
-    private void OnButtonHighlighted(string explanationText)
+    // 버튼 하이라이트 시 
+    private void OnButtonHighlighted(Button button, string explanationText)
     {
+        // 버튼 설명 표시
         explainTextUI.text = explanationText;
         explainTextUI.ForceMeshUpdate();
+
+        // 버튼 스케일 늘리기
+        button.transform.DOScale(Vector3.one * 1.1f, 0.2f);
+    }
+
+    // 버튼 하이라이트 벗어났을 때
+    private void OnButtonUnhighlighted(Button button)
+    {
+        //button.transform.DOKill();
+        // 원래 크기로, 0.2초 동안
+        button.transform.DOScale(Vector3.one, 0.2f);
     }
 
     // 종료

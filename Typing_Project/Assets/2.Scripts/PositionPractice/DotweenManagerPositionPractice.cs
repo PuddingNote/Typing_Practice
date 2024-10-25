@@ -14,6 +14,7 @@ public class DotweenManagerPositionPractice : MonoBehaviour
     // ETC
     private bool isClick;
 
+    // Awake()
     private void Awake()
     {
         isClick = false;
@@ -21,6 +22,7 @@ public class DotweenManagerPositionPractice : MonoBehaviour
         HideButton.onClick.AddListener(OnHideButtonClick);
     }
 
+    // 
     private void OnHideButtonClick()
     {
         isClick = !isClick;
