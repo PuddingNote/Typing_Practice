@@ -87,9 +87,16 @@ public class TypingPracticeWordPractice : MonoBehaviour, ITypingPractice
         LoadTextsFromFile();
         SetNextText();
         UpdateLeftText();
-        inputField.ActivateInputField();
 
+        inputField.ActivateInputField();
         inputField.onValueChanged.AddListener(delegate { CheckInput(); });
+        inputField.onSelect.AddListener(OnInputFieldClick);
+    }
+
+    // 화면 클릭 시 InputField의 caretPosition을 텍스트 끝으로 이동
+    private void OnInputFieldClick(string value)
+    {
+        inputField.caretPosition = inputField.text.Length;
     }
 
     // Update()
