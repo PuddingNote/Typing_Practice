@@ -69,6 +69,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
         consonants = new List<string>();
         vowels = new List<string>();
         isConsonantTurn = false;
+
         isGameEnded = false;
         isWaiting = false;         
     }
@@ -111,27 +112,23 @@ public class TypingPracticePositionPractice : MonoBehaviour
         {
             bool isShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-            // 모든 KeyCode에 대해 입력 체크
             foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
             {
-                // 키가 눌려 있으면
-                if (Input.GetKey(keyCode))
+                if (Input.GetKeyDown(keyCode))                      // GetKey 쓰다가 GetKeyDown쓰니까 입력이 잘된다??
                 {
-                    // 한 번만 체크하기 위해 키가 눌린 후 특정 시간 동안 감지
                     string input = KeyCodeToKoreanChar(keyCode, isShiftPressed);
 
                     if (!string.IsNullOrEmpty(input))
                     {
                         CheckInput(input);
                     }
-                    break; // 첫 번째 입력 처리 후 루프 종료
                 }
             }
         }
         else
         {
-            // 기본 입력 처리 (문자열 입력)
             string input = Input.inputString;
+
             if (!string.IsNullOrEmpty(input) && input != "\n" && input != "\r")
             {
                 CheckInput(input);
@@ -213,7 +210,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     private void LoadTextsFromFile()
     {
         string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataPositionPractice.selectedType + ".txt");
-        
+
         if (PersistentDataPositionPractice.selectedType == "Korean")
         {
             string[] lines = File.ReadAllLines(path);
@@ -242,12 +239,13 @@ public class TypingPracticePositionPractice : MonoBehaviour
                     texts.Add(line.Trim());
                 }
             }
-        }        
+        }
     }
 
-    // 다음 Text 설정 (자음 모음이 번갈아 나오도록 설정)
+    // 다음 Text 설정
     private void SetNextText()
     {
+        // 한글 입력이면 자음 모음이 번갈아 나오도록 설정
         if (PersistentDataPositionPractice.selectedType == "Korean")
         {
             if (currentIndex == -1)
@@ -283,6 +281,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
             isConsonantTurn = !isConsonantTurn;
         }
+        // 영어 입력
         else
         {
             if (currentIndex == -1)
@@ -313,12 +312,52 @@ public class TypingPracticePositionPractice : MonoBehaviour
         }
     }
 
+    /*
+    private void LoadTextsFromFile()
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataPositionPractice.selectedType + ".txt");
 
+        string[] lines = File.ReadAllLines(path);
+        foreach (string line in lines)
+        {
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                texts.Add(line.Trim());
+            }
+        }
+    }
 
+    private void SetNextText()
+    {
+        if (currentIndex == -1)
+        {
+            currentIndex = UnityEngine.Random.Range(0, texts.Count);
+        }
+        else
+        {
+            currentIndex = nextIndex;
+        }
 
+        do
+        {
+            nextIndex = UnityEngine.Random.Range(0, texts.Count);
+        } while (nextIndex == currentIndex);
 
+        currentText = texts[currentIndex];
+        displayText.text = currentText;
 
+        if (totalCharactersTyped == (maxWords - 1))
+        {
+            nextDisplayText.text = "";
+        }
+        else
+        {
+            nextDisplayText.text = texts[nextIndex];
+        }
+    }
+    */ // 기존 텍스트 관련 코드
 
+    // 입력 처리
     private void CheckInput(string input)
     {
         Debug.Log(input);
@@ -326,7 +365,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
         // 현재 입력이 모음이라면
         if (IsVowel(input))
         {
-            // 모음 입력 처리
             CheckVowelInput(input);
         }
         // 자음이라면
@@ -335,32 +373,28 @@ public class TypingPracticePositionPractice : MonoBehaviour
             // 첫 입력이 자음이면
             if (currentVowelSequence.Length == 0)
             {
-                // 자음만 입력했을 때
                 if (input == currentText)
                 {
-                    UpdateDisplayText(true);
                     correctWords++;
                     totalCharactersTyped++;
-                    //currentVowelSequence = "";
 
+                    UpdateDisplayText(true);
                     StartCoroutine(WaitAndSetNextText(true));
                 }
                 else
                 {
-                    UpdateDisplayText(false);
                     totalTypos++;
-                    //currentVowelSequence = "";
 
+                    UpdateDisplayText(false);
                     StartCoroutine(WaitAndSetNextText(false));
                 }
             }
+            // 모음 입력 중에 자음이 들어온 경우 오타 처리
             else
             {
-                // 모음 입력 중에 자음이 들어온 경우 오타 처리
-                UpdateDisplayText(false);
                 totalTypos++;
-                //currentVowelSequence = "";
 
+                UpdateDisplayText(false);
                 StartCoroutine(WaitAndSetNextText(false));
             }
         }
@@ -376,7 +410,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         string resultVowel = GetFullVowelFromCombination(currentVowelSequence);
 
-        // 모음 조합이 완성 되지 않았다면
+        // 모음 조합이 아직 완성 되지 않았다면
         if (resultVowel == null)
         {
             return;
@@ -386,19 +420,17 @@ public class TypingPracticePositionPractice : MonoBehaviour
         {
             if (resultVowel == currentText)
             {
-                UpdateDisplayText(true);  // 정답 처리
                 correctWords++;
                 totalCharactersTyped++;
-                //currentVowelSequence = "";
 
+                UpdateDisplayText(true);
                 StartCoroutine(WaitAndSetNextText(true));
             }
             else
             {
-                UpdateDisplayText(false);
                 totalTypos++;
-                //currentVowelSequence = "";
 
+                UpdateDisplayText(false);
                 StartCoroutine(WaitAndSetNextText(false));
             }
 
@@ -407,7 +439,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
         }
     }
 
-    // 천지인 모음 조합이 완성되었는지 확인하는 함수
+    // 천지인 모음 조합이 완성되었는지 확인
     private string GetFullVowelFromCombination(string combination)
     {
         // 천지인 모음 딕셔너리에서 일치하는 모음이 있는지 찾음
@@ -419,13 +451,12 @@ public class TypingPracticePositionPractice : MonoBehaviour
             // 찾은 키가 정답과 같다면
             if (vowelKey == currentText)
             {
+                string correctCombinationTemp = string.Join("", correctCombination);
+
                 // 입력한 길이가 입력해야 할 길이와 같다면
                 if (combination.Length == correctCombination.Length)
                 {
-                    Debug.Log("combination : " + combination);
-                    Debug.Log("correctCombination: " + string.Join("", correctCombination));
-
-                    if (correctCombination.SequenceEqual(combination.Select(c => c.ToString())))
+                    if (combination == correctCombinationTemp)
                     {
                         return vowelKey;
                     }
@@ -434,11 +465,12 @@ public class TypingPracticePositionPractice : MonoBehaviour
                         return "Wrong";
                     }
                 }
-                // 길이가 다르다면
+                else if (combination.Length > correctCombination.Length)
+                {
+                    return "Wrong";
+                }
                 else
                 {
-                    string correctCombinationTemp = string.Join("", correctCombination);
-
                     // 제일 마지막으로 입력된 내용이 vowelKey와 같다면
                     if (combination[combination.Length - 1].ToString() == vowelKey)
                     {
@@ -461,147 +493,6 @@ public class TypingPracticePositionPractice : MonoBehaviour
 
         return null;
     }
-
-
-
-
-    //// 입력 처리
-    //private void CheckInput(string input)
-    //{
-    //    Debug.Log(input);
-
-    //    // 현재 입력이 모음이라면
-    //    if (IsVowel(input))
-    //    {
-    //        CheckVowelInput(input);
-    //    }
-    //    // 자음이라면
-    //    else
-    //    {
-    //        // 모음 입력 중이었는데 자음이 들어온거라면 오타 처리
-    //        if (currentVowelSequence.Length > 0)
-    //        {
-    //            UpdateDisplayText(false);
-    //            totalTypos++;
-    //            currentVowelSequence = "";
-
-    //            StartCoroutine(WaitAndSetNextText(false));
-    //        }
-    //        // 첫 입력이 자음이면
-    //        else
-    //        {
-    //            if (input == currentText)
-    //            {
-    //                UpdateDisplayText(true);
-    //                correctWords++;
-    //                totalCharactersTyped++;
-
-    //                StartCoroutine(WaitAndSetNextText(true));
-    //            }
-    //            else
-    //            {
-    //                UpdateDisplayText(false);
-    //                totalTypos++;
-
-    //                StartCoroutine(WaitAndSetNextText(false));
-    //            }
-    //        }
-
-    //        UpdateAccuracy();
-    //        UpdateTypo();
-    //    }
-    //}
-
-    //// 모음 입력 처리
-    //private void CheckVowelInput(string input)
-    //{
-    //    currentVowelSequence += input;
-
-    //    string resultVowel = GetFullVowelFromCombination(currentVowelSequence);
-
-    //    // 모음 조합이 완성 되지 않았다면
-    //    if (resultVowel == null)
-    //    {
-    //        return;
-    //    }
-    //    // 완성된 모음이라면
-    //    else
-    //    {
-    //        if (resultVowel == currentText)
-    //        {
-    //            UpdateDisplayText(true);  // 정답 처리
-    //            correctWords++;
-    //            totalCharactersTyped++;
-    //            currentVowelSequence = "";
-
-    //            StartCoroutine(WaitAndSetNextText(true));
-    //        }
-    //        else
-    //        {
-    //            UpdateDisplayText(false);
-    //            totalTypos++;
-    //            currentVowelSequence = "";
-
-    //            StartCoroutine(WaitAndSetNextText(false));
-    //        }
-
-    //        UpdateAccuracy();
-    //        UpdateTypo();
-    //    }
-    //}
-
-    //// 천지인 모음 조합이 완성되었는지 확인하는 함수
-    //private string GetFullVowelFromCombination(string combination)
-    //{
-    //    // 천지인 모음 딕셔너리에서 일치하는 모음이 있는지 찾음
-    //    foreach (var vowelEntry in keyboardManager.chonjiinVowelsInputCheck)
-    //    {
-    //        string vowelKey = vowelEntry.Key;
-    //        string[] correctCombination = vowelEntry.Value;
-
-    //        // 찾은 키가 정답과 같다면
-    //        if (vowelKey == currentText)
-    //        {
-    //            // 입력한 길이가 입력해야할 길이와 같다면
-    //            if (combination.Length == correctCombination.Length)
-    //            {
-    //                Debug.Log("combination : " + combination);
-    //                //Debug.Log("correctCombination: " + string.Join("", correctCombination));
-
-    //                //if (correctCombination.SequenceEqual(combination.Select(c => c.ToString())))
-    //                if (combination == string.Join("", correctCombination))
-    //                {
-    //                    return vowelKey;
-    //                }
-    //                else
-    //                {
-    //                    return "Wrong";
-    //                }
-    //            }
-    //            else
-    //            {
-    //                string correctCombinationTemp = string.Join("", correctCombination);
-    //                for (int i = 0; i < combination.Length; i++)
-    //                {
-    //                    if (combination[i] != correctCombinationTemp[i])
-    //                    {
-    //                        return "Wrong";
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    return null;
-    //}
-
-
-
-
-    
-
-
-
 
     // 모음 여부 확인
     private bool IsVowel(string input)
@@ -666,7 +557,15 @@ public class TypingPracticePositionPractice : MonoBehaviour
         else
         {
             displayText.text = $"<color=red>{currentText}</color>";
+            StartCoroutine(ResetDisplayTextColor());
         }
+    }
+
+    // 오타시 텍스트 색상 0.3초 대기 후 다시 복구
+    private IEnumerator ResetDisplayTextColor()
+    {
+        yield return new WaitForSeconds(0.3f);
+        displayText.text = currentText;
     }
 
     // 남은 단어 수 Update

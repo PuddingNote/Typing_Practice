@@ -180,7 +180,6 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         { "¤Æ", new string[] { "¤Å", "¤Æ" } }
     };
 
-
     // ETC
     private TypingPracticePositionPractice typingPractice;
 
