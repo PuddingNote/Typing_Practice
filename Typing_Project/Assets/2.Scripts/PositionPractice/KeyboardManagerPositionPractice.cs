@@ -7,9 +7,14 @@ using TMPro;
 public class KeyboardManagerPositionPractice : MonoBehaviour
 {
     // UI
-    public Button[] keyboardButtons;
-    public TextMeshProUGUI[] keyboardSubTexts;
+    public Button[] rightKeyboardButtons;
+    public TextMeshProUGUI[] rightKeyboardSubTexts;
+    public Button[] leftKeyboardButtons;
+    public TextMeshProUGUI[] leftKeyboardSubTexts;
+
     public GameObject keyboardPanel;
+    public GameObject rightKeyboardPanel;
+    public GameObject leftKeyboardPanel;
     public Button[] keyGuideButtons;
 
     // Text Setting
@@ -72,6 +77,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     //    "", "", "ㅆ", ""
     //};
 
+    /*
     private string[] otherCharacters =
     {
         "기타", "영문", "한글",
@@ -92,6 +98,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         "F5", "F10", "", "",
         "Win"
     };
+    */
 
     // Key
     Dictionary<string, string[]> englishDic = new Dictionary<string, string[]>()
@@ -214,9 +221,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     // 메인키 세팅
     private void SetMainKeyboardLanguage()
     {
-        for (int i = 0; i < keyboardButtons.Length; i++)
+        for (int i = 0; i < rightKeyboardButtons.Length; i++)
         {
-            TextMeshProUGUI buttonText = keyboardButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI buttonText = rightKeyboardButtons[i].GetComponentInChildren<TextMeshProUGUI>();
 
             if (PersistentDataPositionPractice.selectedType == "English")
             {
@@ -226,37 +233,37 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
             {
                 buttonText.text = koreanCharacters[i];
             }
-            else                // 임시
-            {
-                buttonText.text = otherCharacters[i];
-            }
+            //else                // 임시
+            //{
+            //    buttonText.text = otherCharacters[i];
+            //}
         }
     }
 
     // 서브키 세팅
     private void SetSubKeyboardLanguage()
     {
-        for (int i = 0; i < keyboardSubTexts.Length; i++)
+        for (int i = 0; i < rightKeyboardSubTexts.Length; i++)
         {
             if (PersistentDataPositionPractice.selectedType == "English")
             {
-                keyboardSubTexts[i].text = englishSubCharacters[i];
+                rightKeyboardSubTexts[i].text = englishSubCharacters[i];
             }
             else if (PersistentDataPositionPractice.selectedType == "Korean")
             {
-                keyboardSubTexts[i].text = koreanSubCharacters[i];
+                rightKeyboardSubTexts[i].text = koreanSubCharacters[i];
             }
-            else
-            {
-                keyboardSubTexts[i].text = otherSubCharacters[i];
-            }
+            //else
+            //{
+            //    rightKeyboardSubTexts[i].text = otherSubCharacters[i];
+            //}
         }
     }
 
     // Key 버튼 하이라이트 or 클릭 등 관련 모든 것 비활성화
     private void NotFocusKeyboardButton()
     {
-        foreach (Button button in keyboardButtons)
+        foreach (Button button in rightKeyboardButtons)
         {
             foreach (Graphic graphic in button.GetComponentsInChildren<Graphic>())
             {
@@ -287,9 +294,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
             {
                 if (isUpper && characters[i] == "Shift")
                 {
-                    ColorBlock colorBlock = keyboardButtons[i].colors;
+                    ColorBlock colorBlock = rightKeyboardButtons[i].colors;
                     colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i].colors = colorBlock;
+                    rightKeyboardButtons[i].colors = colorBlock;
                     break;
                 }
             }
@@ -298,9 +305,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
             {
                 if (characters[i] == highlightText)
                 {
-                    ColorBlock colorBlock = keyboardButtons[i].colors;
+                    ColorBlock colorBlock = rightKeyboardButtons[i].colors;
                     colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i].colors = colorBlock;
+                    rightKeyboardButtons[i].colors = colorBlock;
                     break;
                 }
             }
@@ -309,9 +316,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
             {
                 if (englishSubCharacters[i] == highlightText)
                 {
-                    ColorBlock colorBlock = keyboardButtons[i + 3].colors;
+                    ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
                     colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i + 3].colors = colorBlock;
+                    rightKeyboardButtons[i + 3].colors = colorBlock;
                     break;
                 }
             }
@@ -336,9 +343,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
                     {
                         if (koreanCharacters[i] == part)
                         {
-                            ColorBlock colorBlock = keyboardButtons[i].colors;
+                            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
                             colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                            keyboardButtons[i].colors = colorBlock;
+                            rightKeyboardButtons[i].colors = colorBlock;
                             break;
                         }
                     }
@@ -355,9 +362,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
                     {
                         if (koreanCharacters[i] == part)
                         {
-                            ColorBlock colorBlock = keyboardButtons[i].colors;
+                            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
                             colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                            keyboardButtons[i].colors = colorBlock;
+                            rightKeyboardButtons[i].colors = colorBlock;
                             break;
                         }
                     }
@@ -368,9 +375,9 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
             //{
             //    if (koreanShiftCharacters[i] == highlightText)
             //    {
-            //        ColorBlock colorBlock = keyboardButtons[i + 3].colors;
+            //        ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
             //        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-            //        keyboardButtons[i + 3].colors = colorBlock;
+            //        rightKeyboardButtons[i + 3].colors = colorBlock;
             //        break;
             //    }
             //}
@@ -379,44 +386,44 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
             {
                 if (characters[i] == highlightText)
                 {
-                    ColorBlock colorBlock = keyboardButtons[i].colors;
+                    ColorBlock colorBlock = rightKeyboardButtons[i].colors;
                     colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i].colors = colorBlock;
+                    rightKeyboardButtons[i].colors = colorBlock;
                     break;
                 }
             }
 
             ActivateKeyGuideButtons(highlightText);
         }
-        // Other
-        else
-        {
-            // 문제가 많음
-            characters = otherCharacters;
+        //// Other
+        //else
+        //{
+        //    // 문제가 많음
+        //    characters = otherCharacters;
 
-            // Main
-            for (int i = 0; i < otherCharacters.Length; i++)
-            {
-                if (characters[i] == highlightText)
-                {
-                    ColorBlock colorBlock = keyboardButtons[i].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i].colors = colorBlock;
-                    break;
-                }
-            }
-            // Sub
-            for (int i = 0; i < otherSubCharacters.Length; i++)
-            {
-                if (otherSubCharacters[i] == highlightText)
-                {
-                    ColorBlock colorBlock = keyboardButtons[i + 3].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    keyboardButtons[i + 3].colors = colorBlock;
-                    break;
-                }
-            }
-        }
+        //    // Main
+        //    for (int i = 0; i < otherCharacters.Length; i++)
+        //    {
+        //        if (characters[i] == highlightText)
+        //        {
+        //            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
+        //            colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+        //            rightKeyboardButtons[i].colors = colorBlock;
+        //            break;
+        //        }
+        //    }
+        //    // Sub
+        //    for (int i = 0; i < otherSubCharacters.Length; i++)
+        //    {
+        //        if (otherSubCharacters[i] == highlightText)
+        //        {
+        //            ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
+        //            colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+        //            rightKeyboardButtons[i + 3].colors = colorBlock;
+        //            break;
+        //        }
+        //    }
+        //}
 
     }
 
@@ -461,10 +468,10 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
                 subCharacters.AddRange(chonjiinVowels[highlightText]);
             }
         }
-        else
-        {
-            // Other
-        }
+        //else
+        //{
+        //    // Other
+        //}
 
         for (int i = 0; i < keyGuideButtons.Length; i++)
         {
@@ -483,11 +490,11 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     // 모든 키 색상 초기화
     public void ResetKeyColors()
     {
-        for (int i = 0; i < keyboardButtons.Length; i++)
+        for (int i = 0; i < rightKeyboardButtons.Length; i++)
         {
-            ColorBlock colorBlock = keyboardButtons[i].colors;
+            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
             colorBlock.normalColor = Color.white;
-            keyboardButtons[i].colors = colorBlock;
+            rightKeyboardButtons[i].colors = colorBlock;
         }
     }
 
