@@ -53,7 +53,7 @@ public class TypingPracticeWordPractice : MonoBehaviour, ITypingPractice
         nextIndex = -1;
 
         totalWordsTyped = 0;
-        maxWords = 10;                              // 최대 단어 수 설정
+        maxWords = 20;                              // 최대 단어 수 설정
         correctTypedChars = 0;
         totalTypos = 0;
         totalInput = 0;

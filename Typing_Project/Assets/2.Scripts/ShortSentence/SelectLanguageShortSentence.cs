@@ -35,6 +35,8 @@ public class SelectLanguageShortSentence : MonoBehaviour
     // 언어 선택에 따른 처리
     private void SelectLanguage(string language)
     {
+        Debug.Log(language);
+        Debug.Log(keyboardManager);
         PersistentDataShortSentence.selectedLanguage = language;
         languagePanel.SetActive(false);
         keyboardManager.StartPractice();

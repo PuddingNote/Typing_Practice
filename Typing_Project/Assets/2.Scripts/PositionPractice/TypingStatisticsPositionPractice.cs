@@ -31,17 +31,13 @@ public class TypingStatisticsPositionPractice : MonoBehaviour
     // UI 세팅
     private void SetUI()
     {
-        if (PersistentDataPositionPractice.selectedType == "English")
+        if (PersistentDataPositionPractice.selectedLanguage == "English")
         {
             typeText.text = "영문자리";
         }
-        else if (PersistentDataPositionPractice.selectedType == "Korean")
+        else if (PersistentDataPositionPractice.selectedLanguage == "Korean")
         {
             typeText.text = "한글자리";
-        }
-        else if (PersistentDataPositionPractice.selectedType == "Other")
-        {
-            typeText.text = "특수자리";
         }
     }
 

@@ -33,7 +33,7 @@ public class SelectTypePositionPractice : MonoBehaviour
     // Start()
     private void Start()
     {
-        if (string.IsNullOrEmpty(PersistentDataPositionPractice.selectedType))
+        if (string.IsNullOrEmpty(PersistentDataPositionPractice.selectedLanguage))
         {
             selectTypePanel.SetActive(true);
         }
@@ -47,7 +47,7 @@ public class SelectTypePositionPractice : MonoBehaviour
     // 타입 선택 결과
     private void SelectType(string type)
     {
-        PersistentDataPositionPractice.selectedType = type;
+        PersistentDataPositionPractice.selectedLanguage = type;
         selectTypePanel.SetActive(false);
 
         StartPractice();

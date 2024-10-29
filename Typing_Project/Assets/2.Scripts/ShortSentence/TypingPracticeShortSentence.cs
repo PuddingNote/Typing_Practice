@@ -56,7 +56,7 @@ public class TypingPracticeShortSentence : MonoBehaviour, ITypingPractice
         nextIndex = -1;
 
         totalWordsTyped = 0;
-        maxWords = 10;                              // 단문연습 최대 문장 수 설정
+        maxWords = 20;                              // 단문연습 최대 문장 수 설정
         correctTypedChars = 0;
         totalTypos = 0;
         totalInput = 0;

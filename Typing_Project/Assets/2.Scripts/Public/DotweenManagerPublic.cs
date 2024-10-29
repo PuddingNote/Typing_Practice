@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+
+// PositionPractice 제외 나머지
 public class DotweenManagerPublic : MonoBehaviour
 {
     // UI

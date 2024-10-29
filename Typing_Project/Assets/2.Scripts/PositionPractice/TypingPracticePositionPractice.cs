@@ -11,7 +11,7 @@ using System.Linq;
 // static
 public static class PersistentDataPositionPractice
 {
-    public static string selectedType = "";
+    public static string selectedLanguage = "";
 }
 
 public class TypingPracticePositionPractice : MonoBehaviour
@@ -60,7 +60,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
         nextIndex = -1;
 
         totalCharactersTyped = 0;
-        maxWords = 10;                              // 자리연습 최대 단어 수 설정
+        maxWords = 20;                              // 자리연습 최대 단어 수 설정
         correctWords = 0;
         totalTypos = 0;
 
@@ -108,7 +108,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     {
         if (isGameEnded || isWaiting) return;
 
-        if (PersistentDataPositionPractice.selectedType == "Korean")
+        if (PersistentDataPositionPractice.selectedLanguage == "Korean")
         {
             bool isShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
@@ -209,9 +209,9 @@ public class TypingPracticePositionPractice : MonoBehaviour
     // File Load (빈 줄이나 공백 제외)
     private void LoadTextsFromFile()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataPositionPractice.selectedType + ".txt");
+        string path = Path.Combine(Application.streamingAssetsPath, SceneManager.GetActiveScene().name, "Texts", PersistentDataPositionPractice.selectedLanguage + ".txt");
 
-        if (PersistentDataPositionPractice.selectedType == "Korean")
+        if (PersistentDataPositionPractice.selectedLanguage == "Korean")
         {
             string[] lines = File.ReadAllLines(path);
             foreach (string line in lines)
@@ -246,7 +246,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     private void SetNextText()
     {
         // 한글 입력이면 자음 모음이 번갈아 나오도록 설정
-        if (PersistentDataPositionPractice.selectedType == "Korean")
+        if (PersistentDataPositionPractice.selectedLanguage == "Korean")
         {
             if (currentIndex == -1)
             {
@@ -370,26 +370,27 @@ public class TypingPracticePositionPractice : MonoBehaviour
         // 자음이라면
         else
         {
-            // 첫 입력이 자음이면
-            if (currentVowelSequence.Length == 0)
+            CheckConsonantInput(input);
+        }
+
+        UpdateAccuracy();
+        UpdateTypo();
+    }
+
+    // 자음 입력 처리
+    private void CheckConsonantInput(string input)
+    {
+        // 첫 입력이 자음이라면
+        if (currentVowelSequence.Length == 0)
+        {
+            if (input == currentText)
             {
-                if (input == currentText)
-                {
-                    correctWords++;
-                    totalCharactersTyped++;
+                correctWords++;
+                totalCharactersTyped++;
 
-                    UpdateDisplayText(true);
-                    StartCoroutine(WaitAndSetNextText(true));
-                }
-                else
-                {
-                    totalTypos++;
-
-                    UpdateDisplayText(false);
-                    StartCoroutine(WaitAndSetNextText(false));
-                }
+                UpdateDisplayText(true);
+                StartCoroutine(WaitAndSetNextText(true));
             }
-            // 모음 입력 중에 자음이 들어온 경우 오타 처리
             else
             {
                 totalTypos++;
@@ -398,9 +399,14 @@ public class TypingPracticePositionPractice : MonoBehaviour
                 StartCoroutine(WaitAndSetNextText(false));
             }
         }
+        // 모음 입력 중에 자음이 들어온 경우 오타 처리
+        else
+        {
+            totalTypos++;
 
-        UpdateAccuracy();
-        UpdateTypo();
+            UpdateDisplayText(false);
+            StartCoroutine(WaitAndSetNextText(false));
+        }
     }
 
     // 모음 입력 처리
@@ -592,7 +598,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
     private void OnTitleButtonPressed()
     {
         SceneManager.LoadScene("TitleScene");
-        PersistentDataPositionPractice.selectedType = "";
+        PersistentDataPositionPractice.selectedLanguage = "";
     }
 
     // 일시정지

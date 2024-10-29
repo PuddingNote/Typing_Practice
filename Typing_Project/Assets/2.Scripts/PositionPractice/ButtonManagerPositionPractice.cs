@@ -27,13 +27,13 @@ public class ButtonManagerPositionPractice : MonoBehaviour
 
             EventTrigger trigger = button.gameObject.AddComponent<EventTrigger>();
 
-            // 버튼 하이라이트시
+            // 버튼 하이라이트
             EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
             pointerEnter.eventID = EventTriggerType.PointerEnter;
             pointerEnter.callback.AddListener((eventData) => OnButtonHighlighted(button));
             trigger.triggers.Add(pointerEnter);
 
-            // 버튼 하이라이트 벗어났을 시
+            // 버튼 하이라이트 X
             EventTrigger.Entry pointerExit = new EventTrigger.Entry();
             pointerExit.eventID = EventTriggerType.PointerExit;
             pointerExit.callback.AddListener((eventData) => OnButtonUnhighlighted(button));
@@ -41,18 +41,15 @@ public class ButtonManagerPositionPractice : MonoBehaviour
         }
     }
 
-    // 버튼 하이라이트 시 
+    // 버튼 하이라이트
     private void OnButtonHighlighted(Button button)
     {
-        // 버튼 스케일 늘리기
         button.transform.DOScale(Vector3.one * 1.1f, 0.2f);
     }
 
-    // 버튼 하이라이트 벗어났을 때
+    // 버튼 하이라이트 X
     private void OnButtonUnhighlighted(Button button)
     {
-        //button.transform.DOKill();
-        // 원래 크기로, 0.2초 동안
         button.transform.DOScale(Vector3.one, 0.2f);
     }
 
@@ -60,7 +57,7 @@ public class ButtonManagerPositionPractice : MonoBehaviour
     public void GoTitleScene()
     {
         SceneManager.LoadScene("TitleScene");
-        PersistentDataPositionPractice.selectedType = "";
+        PersistentDataPositionPractice.selectedLanguage = "";
     }
 
     // RestartScene()

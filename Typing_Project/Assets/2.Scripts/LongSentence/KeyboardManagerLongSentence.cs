@@ -7,9 +7,17 @@ using TMPro;
 public class KeyboardManagerLongSentence : MonoBehaviour
 {
     // UI
-    public Button[] keyboardButtons;
-    public TextMeshProUGUI[] keyboardSubTexts;
+    public Button[] rightKeyboardButtons;
+    public TextMeshProUGUI[] rightKeyboardSubTexts;
+    public Button[] leftKeyboardButtons;
+    public TextMeshProUGUI[] leftKeyboardSubTexts;
+
     public GameObject keyboardPanel;
+    public GameObject rightKeyboardPanel;
+    public GameObject leftKeyboardPanel;
+
+    public Button rightButton;
+    public Button leftButton;
 
     // Text Setting
     private string[] englishCharacters =
@@ -32,16 +40,6 @@ public class KeyboardManagerLongSentence : MonoBehaviour
         "=", "", "J", "/",
         "Win"
     };
-    //private string[] englishSubCharacters =
-    //{
-    //    "", "P", "C", "K",
-    //    "LAlt", "V", "", "X",
-    //    "Q", "F", "", ";",
-    //    "Z", "", "", "'",
-    //    "=", "", "J", "/",
-    //    "Win"
-    //};
-
     private string[] koreanCharacters =
     {
         "기타", "영문", "한글",
@@ -87,14 +85,38 @@ public class KeyboardManagerLongSentence : MonoBehaviour
 
         if (typingPractice != null)
         {
-            SetMainKeyboardLanguage();
-            SetSubKeyboardLanguage();
-            NotFocusKeyboardButton();
+            ActivateRightKeyboard();
+            leftKeyboardPanel.SetActive(false);
         }
+
+        rightButton.onClick.AddListener(ActivateRightKeyboard);
+        leftButton.onClick.AddListener(ActivateLeftKeyboard);
+    }
+
+    // 오른쪽 키보드 활성화
+    private void ActivateRightKeyboard()
+    {
+        rightKeyboardPanel.SetActive(true);
+        leftKeyboardPanel.SetActive(false);
+
+        SetMainKeyboardLanguage(rightKeyboardButtons, englishCharacters, koreanCharacters);
+        SetSubKeyboardLanguage(rightKeyboardSubTexts, englishSubCharacters, koreanSubCharacters);
+        NotFocusKeyboardButton(rightKeyboardButtons);
+    }
+
+    // 왼쪽 키보드 활성화
+    private void ActivateLeftKeyboard()
+    {
+        rightKeyboardPanel.SetActive(false);
+        leftKeyboardPanel.SetActive(true);
+
+        SetMainKeyboardLanguage(leftKeyboardButtons, englishCharacters, koreanCharacters);
+        SetSubKeyboardLanguage(leftKeyboardSubTexts, englishSubCharacters, koreanSubCharacters);
+        NotFocusKeyboardButton(leftKeyboardButtons);
     }
 
     // 메인키 세팅
-    private void SetMainKeyboardLanguage()
+    private void SetMainKeyboardLanguage(Button[] keyboardButtons, string[] englishKeys, string[] koreanKeys)
     {
         for (int i = 0; i < keyboardButtons.Length; i++)
         {
@@ -102,33 +124,33 @@ public class KeyboardManagerLongSentence : MonoBehaviour
 
             if (PersistentDataLongSentence.selectedLanguage == "English")
             {
-                buttonText.text = englishCharacters[i];
+                buttonText.text = englishKeys[i];
             }
             else if (PersistentDataLongSentence.selectedLanguage == "Korean")
             {
-                buttonText.text = koreanCharacters[i];
+                buttonText.text = koreanKeys[i];
             }
         }
     }
 
     // 서브키 세팅
-    private void SetSubKeyboardLanguage()
+    private void SetSubKeyboardLanguage(TextMeshProUGUI[] subTexts, string[] englishSubKeys, string[] koreanSubKeys)
     {
-        for (int i = 0; i < keyboardSubTexts.Length; i++)
+        for (int i = 0; i < subTexts.Length; i++)
         {
             if (PersistentDataLongSentence.selectedLanguage == "English")
             {
-                keyboardSubTexts[i].text = englishSubCharacters[i];
+                subTexts[i].text = englishSubKeys[i];
             }
             else if (PersistentDataLongSentence.selectedLanguage == "Korean")
             {
-                keyboardSubTexts[i].text = koreanSubCharacters[i];
+                subTexts[i].text = koreanSubKeys[i];
             }
         }
     }
 
     // Key 버튼 하이라이트 or 클릭 등 관련 모든 것 비활성화
-    private void NotFocusKeyboardButton()
+    private void NotFocusKeyboardButton(Button[] keyboardButtons)
     {
         foreach (Button button in keyboardButtons)
         {

@@ -17,7 +17,10 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     public GameObject leftKeyboardPanel;
     public Button[] keyGuideButtons;
 
-    // Text Setting
+    public Button rightButton;
+    public Button leftButton;
+
+    // Keyboard Text Setting
     private string[] englishCharacters =
     {
         "기타", "영문", "한글",
@@ -38,16 +41,6 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         "=", "", "J", "/",
         "Win"
     };
-    //private string[] englishSubCharacters =
-    //{
-    //    "", "P", "C", "K",
-    //    "LAlt", "V", "", "X",
-    //    "Q", "F", "", ";",
-    //    "Z", "", "", "'",
-    //    "=", "", "J", "/",
-    //    "Win"
-    //};
-
     private string[] koreanCharacters = 
     { 
         "기타", "영문", "한글", 
@@ -68,39 +61,8 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         "=", "", "", "/",
         "Win"
     };
-    //private string[] koreanShiftCharacters =
-    //{
-    //    "", "ㅃ", "", "",
-    //    "", "ㅉ", "", "ㄸ",
-    //    "", "", "", "",
-    //    "", "ㄲ", "", "",
-    //    "", "", "ㅆ", ""
-    //};
-
-    /*
-    private string[] otherCharacters =
-    {
-        "기타", "영문", "한글",
-        "1", "6", "Home", "End",
-        "2", "7", "[", "←",
-        "3", "8", "↑", "↓",
-        "4", "9", "'", "→",
-        "5", "0", "PgUp", "PgDn",
-        "Del", "Ins", "Enter",
-        "Space", "Shift", "Ctrl"
-    };
-    private string[] otherSubCharacters =
-    {
-        "F1", "F6", "", "",
-        "F2", "F7", "]", "",
-        "F3", "F8", "", "",
-        "F4", "F9", "\\", "'",
-        "F5", "F10", "", "",
-        "Win"
-    };
-    */
-
-    // Key
+    
+    // (천지인) Key Setting
     Dictionary<string, string[]> englishDic = new Dictionary<string, string[]>()
     {
         { "R", new string[] { "R" } },
@@ -212,58 +174,74 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
 
         if (typingPractice != null)
         {
-            SetMainKeyboardLanguage();
-            SetSubKeyboardLanguage();
-            NotFocusKeyboardButton();
+            ActivateRightKeyboard();
+            leftKeyboardPanel.SetActive(false);
         }
+
+        rightButton.onClick.AddListener(ActivateRightKeyboard);
+        leftButton.onClick.AddListener(ActivateLeftKeyboard);
+    }
+
+    // 오른쪽 키보드 활성화
+    private void ActivateRightKeyboard()
+    {
+        rightKeyboardPanel.SetActive(true);
+        leftKeyboardPanel.SetActive(false);
+
+        SetMainKeyboardLanguage(rightKeyboardButtons, englishCharacters, koreanCharacters);
+        SetSubKeyboardLanguage(rightKeyboardSubTexts, englishSubCharacters, koreanSubCharacters);
+        NotFocusKeyboardButton(rightKeyboardButtons);
+    }
+
+    // 왼쪽 키보드 활성화
+    private void ActivateLeftKeyboard()
+    {
+        rightKeyboardPanel.SetActive(false);
+        leftKeyboardPanel.SetActive(true);
+
+        SetMainKeyboardLanguage(leftKeyboardButtons, englishCharacters, koreanCharacters);
+        SetSubKeyboardLanguage(leftKeyboardSubTexts, englishSubCharacters, koreanSubCharacters);
+        NotFocusKeyboardButton(leftKeyboardButtons);
     }
 
     // 메인키 세팅
-    private void SetMainKeyboardLanguage()
+    private void SetMainKeyboardLanguage(Button[] keyboardButtons, string[] englishKeys, string[] koreanKeys)
     {
-        for (int i = 0; i < rightKeyboardButtons.Length; i++)
+        for (int i = 0; i < keyboardButtons.Length; i++)
         {
-            TextMeshProUGUI buttonText = rightKeyboardButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI buttonText = keyboardButtons[i].GetComponentInChildren<TextMeshProUGUI>();
 
-            if (PersistentDataPositionPractice.selectedType == "English")
+            if (PersistentDataPositionPractice.selectedLanguage == "English")
             {
-                buttonText.text = englishCharacters[i];
+                buttonText.text = englishKeys[i];
             }
-            else if (PersistentDataPositionPractice.selectedType == "Korean")
+            else if (PersistentDataPositionPractice.selectedLanguage == "Korean")
             {
-                buttonText.text = koreanCharacters[i];
+                buttonText.text = koreanKeys[i];
             }
-            //else                // 임시
-            //{
-            //    buttonText.text = otherCharacters[i];
-            //}
         }
     }
 
     // 서브키 세팅
-    private void SetSubKeyboardLanguage()
+    private void SetSubKeyboardLanguage(TextMeshProUGUI[] subTexts, string[] englishSubKeys, string[] koreanSubKeys)
     {
-        for (int i = 0; i < rightKeyboardSubTexts.Length; i++)
+        for (int i = 0; i < subTexts.Length; i++)
         {
-            if (PersistentDataPositionPractice.selectedType == "English")
+            if (PersistentDataPositionPractice.selectedLanguage == "English")
             {
-                rightKeyboardSubTexts[i].text = englishSubCharacters[i];
+                subTexts[i].text = englishSubKeys[i];
             }
-            else if (PersistentDataPositionPractice.selectedType == "Korean")
+            else if (PersistentDataPositionPractice.selectedLanguage == "Korean")
             {
-                rightKeyboardSubTexts[i].text = koreanSubCharacters[i];
+                subTexts[i].text = koreanSubKeys[i];
             }
-            //else
-            //{
-            //    rightKeyboardSubTexts[i].text = otherSubCharacters[i];
-            //}
         }
     }
 
     // Key 버튼 하이라이트 or 클릭 등 관련 모든 것 비활성화
-    private void NotFocusKeyboardButton()
+    private void NotFocusKeyboardButton(Button[] keyboardButtons)
     {
-        foreach (Button button in rightKeyboardButtons)
+        foreach (Button button in keyboardButtons)
         {
             foreach (Graphic graphic in button.GetComponentsInChildren<Graphic>())
             {
@@ -282,159 +260,216 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
 
         string[] characters;
 
-        // English
-        if (PersistentDataPositionPractice.selectedType == "English")
-        {
-            bool isUpper = char.IsUpper(highlightText[0]);
-            highlightText = highlightText.ToUpper();
-            characters = englishCharacters;
-
-            // Shift
-            for (int i = 0; i < englishCharacters.Length; i++)
+        // 오른손
+        if (PersistentDataPositionPractice.selectedLanguage == "English")
             {
-                if (isUpper && characters[i] == "Shift")
-                {
-                    ColorBlock colorBlock = rightKeyboardButtons[i].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    rightKeyboardButtons[i].colors = colorBlock;
-                    break;
-                }
-            }
-            // Main
-            for (int i = 0; i < englishCharacters.Length; i++)
-            {
-                if (characters[i] == highlightText)
-                {
-                    ColorBlock colorBlock = rightKeyboardButtons[i].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    rightKeyboardButtons[i].colors = colorBlock;
-                    break;
-                }
-            }
-            // Sub
-            for (int i = 0; i < englishSubCharacters.Length; i++)
-            {
-                if (englishSubCharacters[i] == highlightText)
-                {
-                    ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    rightKeyboardButtons[i + 3].colors = colorBlock;
-                    break;
-                }
-            }
+                bool isUpper = char.IsUpper(highlightText[0]);
+                highlightText = highlightText.ToUpper();
+                characters = englishCharacters;
 
-            if(!isUpper) highlightText = highlightText.ToLower();
-
-            ActivateKeyGuideButtons(highlightText);
-        }
-        // Korean
-        else if (PersistentDataPositionPractice.selectedType == "Korean")
-        {
-            characters = koreanCharacters;
-
-            // 모음
-            if (chonjiinVowels.ContainsKey(highlightText))
-            {
-                string[] vowelComposition = chonjiinVowels[highlightText];
-
-                foreach (string part in vowelComposition)
+                // Shift
+                for (int i = 0; i < englishCharacters.Length; i++)
                 {
-                    for (int i = 0; i < koreanCharacters.Length; i++)
+                    if (isUpper && characters[i] == "Shift")
                     {
-                        if (koreanCharacters[i] == part)
+                        ColorBlock colorBlock = rightKeyboardButtons[i].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        rightKeyboardButtons[i].colors = colorBlock;
+                        break;
+                    }
+                }
+
+                // Main
+                for (int i = 0; i < englishCharacters.Length; i++)
+                {
+                    if (characters[i] == highlightText)
+                    {
+                        ColorBlock colorBlock = rightKeyboardButtons[i].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        rightKeyboardButtons[i].colors = colorBlock;
+                        break;
+                    }
+                }
+
+                // Sub
+                for (int i = 0; i < englishSubCharacters.Length; i++)
+                {
+                    if (englishSubCharacters[i] == highlightText)
+                    {
+                        ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        rightKeyboardButtons[i + 3].colors = colorBlock;
+                        break;
+                    }
+                }
+
+                if (!isUpper) highlightText = highlightText.ToLower();
+
+                ActivateKeyGuideButtons(highlightText);
+            }
+        else if (PersistentDataPositionPractice.selectedLanguage == "Korean")
+            {
+                characters = koreanCharacters;
+
+                // 모음
+                if (chonjiinVowels.ContainsKey(highlightText))
+                {
+                    string[] vowelComposition = chonjiinVowels[highlightText];
+
+                    foreach (string part in vowelComposition)
+                    {
+                        for (int i = 0; i < koreanCharacters.Length; i++)
                         {
-                            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
-                            colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                            rightKeyboardButtons[i].colors = colorBlock;
-                            break;
+                            if (koreanCharacters[i] == part)
+                            {
+                                ColorBlock colorBlock = rightKeyboardButtons[i].colors;
+                                colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                                rightKeyboardButtons[i].colors = colorBlock;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            // 자음
-            if (chonjiinConsonants.ContainsKey(highlightText))
-            {
-                string[] consonantComposition = chonjiinConsonants[highlightText];
-
-                foreach (string part in consonantComposition)
+                // 자음
+                if (chonjiinConsonants.ContainsKey(highlightText))
                 {
-                    for (int i = 0; i < koreanCharacters.Length; i++)
+                    string[] consonantComposition = chonjiinConsonants[highlightText];
+
+                    foreach (string part in consonantComposition)
                     {
-                        if (koreanCharacters[i] == part)
+                        for (int i = 0; i < koreanCharacters.Length; i++)
                         {
-                            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
-                            colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                            rightKeyboardButtons[i].colors = colorBlock;
-                            break;
+                            if (koreanCharacters[i] == part)
+                            {
+                                ColorBlock colorBlock = rightKeyboardButtons[i].colors;
+                                colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                                rightKeyboardButtons[i].colors = colorBlock;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            // Shift (이게 쌍자음인데 일단 넣어둠 : 쓸일없음)
-            //for (int i = 0; i < koreanShiftCharacters.Length; i++)
-            //{
-            //    if (koreanShiftCharacters[i] == highlightText)
-            //    {
-            //        ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
-            //        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-            //        rightKeyboardButtons[i + 3].colors = colorBlock;
-            //        break;
-            //    }
-            //}
-            // Main
-            for (int i = 0; i < koreanCharacters.Length; i++)
-            {
-                if (characters[i] == highlightText)
+
+                // Main
+                for (int i = 0; i < koreanCharacters.Length; i++)
                 {
-                    ColorBlock colorBlock = rightKeyboardButtons[i].colors;
-                    colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-                    rightKeyboardButtons[i].colors = colorBlock;
-                    break;
+                    if (characters[i] == highlightText)
+                    {
+                        ColorBlock colorBlock = rightKeyboardButtons[i].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        rightKeyboardButtons[i].colors = colorBlock;
+                        break;
+                    }
                 }
+
+                ActivateKeyGuideButtons(highlightText);
             }
+        
+        // 왼손
+        if (PersistentDataPositionPractice.selectedLanguage == "English")
+            {
+                bool isUpper = char.IsUpper(highlightText[0]);
+                highlightText = highlightText.ToUpper();
+                characters = englishCharacters;
 
-            ActivateKeyGuideButtons(highlightText);
-        }
-        //// Other
-        //else
-        //{
-        //    // 문제가 많음
-        //    characters = otherCharacters;
+                // Shift
+                for (int i = 0; i < englishCharacters.Length; i++)
+                {
+                    if (isUpper && characters[i] == "Shift")
+                    {
+                        ColorBlock colorBlock = leftKeyboardButtons[i].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        leftKeyboardButtons[i].colors = colorBlock;
+                        break;
+                    }
+                }
 
-        //    // Main
-        //    for (int i = 0; i < otherCharacters.Length; i++)
-        //    {
-        //        if (characters[i] == highlightText)
-        //        {
-        //            ColorBlock colorBlock = rightKeyboardButtons[i].colors;
-        //            colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-        //            rightKeyboardButtons[i].colors = colorBlock;
-        //            break;
-        //        }
-        //    }
-        //    // Sub
-        //    for (int i = 0; i < otherSubCharacters.Length; i++)
-        //    {
-        //        if (otherSubCharacters[i] == highlightText)
-        //        {
-        //            ColorBlock colorBlock = rightKeyboardButtons[i + 3].colors;
-        //            colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
-        //            rightKeyboardButtons[i + 3].colors = colorBlock;
-        //            break;
-        //        }
-        //    }
-        //}
+                // Main
+                for (int i = 0; i < englishCharacters.Length; i++)
+                {
+                    if (characters[i] == highlightText)
+                    {
+                        ColorBlock colorBlock = leftKeyboardButtons[i].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        leftKeyboardButtons[i].colors = colorBlock;
+                        break;
+                    }
+                }
 
-    }
+                // Sub
+                for (int i = 0; i < englishSubCharacters.Length; i++)
+                {
+                    if (englishSubCharacters[i] == highlightText)
+                    {
+                        ColorBlock colorBlock = leftKeyboardButtons[i + 3].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        leftKeyboardButtons[i + 3].colors = colorBlock;
+                        break;
+                    }
+                }
 
-    // KeyGuide 버튼 비활성화
-    public void DisableKeyGuideButtons()
-    {
-        foreach (Button button in keyGuideButtons)
-        {
-            button.GetComponentInChildren<TextMeshProUGUI>().text = ""; // 텍스트 초기화
-            button.gameObject.SetActive(false);
-        }
+                if (!isUpper) highlightText = highlightText.ToLower();
+
+                ActivateKeyGuideButtons(highlightText);
+            }
+        else if (PersistentDataPositionPractice.selectedLanguage == "Korean")
+            {
+                characters = koreanCharacters;
+
+                // 모음
+                if (chonjiinVowels.ContainsKey(highlightText))
+                {
+                    string[] vowelComposition = chonjiinVowels[highlightText];
+
+                    foreach (string part in vowelComposition)
+                    {
+                        for (int i = 0; i < koreanCharacters.Length; i++)
+                        {
+                            if (koreanCharacters[i] == part)
+                            {
+                                ColorBlock colorBlock = leftKeyboardButtons[i].colors;
+                                colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                                leftKeyboardButtons[i].colors = colorBlock;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // 자음
+                if (chonjiinConsonants.ContainsKey(highlightText))
+                {
+                    string[] consonantComposition = chonjiinConsonants[highlightText];
+
+                    foreach (string part in consonantComposition)
+                    {
+                        for (int i = 0; i < koreanCharacters.Length; i++)
+                        {
+                            if (koreanCharacters[i] == part)
+                            {
+                                ColorBlock colorBlock = leftKeyboardButtons[i].colors;
+                                colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                                leftKeyboardButtons[i].colors = colorBlock;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Main
+                for (int i = 0; i < koreanCharacters.Length; i++)
+                {
+                    if (characters[i] == highlightText)
+                    {
+                        ColorBlock colorBlock = leftKeyboardButtons[i].colors;
+                        colorBlock.normalColor = new Color(253f / 255f, 224f / 255f, 71f / 255f);
+                        leftKeyboardButtons[i].colors = colorBlock;
+                        break;
+                    }
+                }
+
+                ActivateKeyGuideButtons(highlightText);
+            }
+        
     }
 
     // KeyGuide 버튼 활성화
@@ -442,7 +477,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
     {
         List<string> subCharacters = new List<string>();
 
-        if (PersistentDataPositionPractice.selectedType == "English")
+        if (PersistentDataPositionPractice.selectedLanguage == "English")
         {
             bool isUpper = char.IsUpper(highlightText[0]);
             highlightText = highlightText.ToUpper();
@@ -457,7 +492,7 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
                 subCharacters.AddRange(englishDic[highlightText]);
             }
         }
-        else if (PersistentDataPositionPractice.selectedType == "Korean")
+        else if (PersistentDataPositionPractice.selectedLanguage == "Korean")
         {
             if (chonjiinConsonants.ContainsKey(highlightText))
             {
@@ -468,10 +503,6 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
                 subCharacters.AddRange(chonjiinVowels[highlightText]);
             }
         }
-        //else
-        //{
-        //    // Other
-        //}
 
         for (int i = 0; i < keyGuideButtons.Length; i++)
         {
@@ -487,14 +518,33 @@ public class KeyboardManagerPositionPractice : MonoBehaviour
         }
     }
 
+    // KeyGuide 버튼 비활성화
+    public void DisableKeyGuideButtons()
+    {
+        foreach (Button button in keyGuideButtons)
+        {
+            button.GetComponentInChildren<TextMeshProUGUI>().text = "";
+            button.gameObject.SetActive(false);
+        }
+    }
+
     // 모든 키 색상 초기화
     public void ResetKeyColors()
     {
+        // 오른손
         for (int i = 0; i < rightKeyboardButtons.Length; i++)
         {
             ColorBlock colorBlock = rightKeyboardButtons[i].colors;
             colorBlock.normalColor = Color.white;
             rightKeyboardButtons[i].colors = colorBlock;
+        }
+
+        // 왼손
+        for (int i = 0; i < leftKeyboardButtons.Length; i++)
+        {
+            ColorBlock colorBlock = leftKeyboardButtons[i].colors;
+            colorBlock.normalColor = Color.white;
+            leftKeyboardButtons[i].colors = colorBlock;
         }
     }
 
