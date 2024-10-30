@@ -459,8 +459,21 @@ public class TypingPracticePositionPractice : MonoBehaviour
             {
                 string correctCombinationTemp = string.Join("", correctCombination);
 
+                // ㅒ,ㅖ 입력 할때 마지막에 강제로 ㅐ,ㅔ로 변환되는 오류 대비 (왜 이러는건지 아직 모르겠음)
+                if (combination.EndsWith("ㅣ"))
+                {
+                    if (currentText == "ㅖ" && combination == "ㅕㅔ")
+                    {
+                        return vowelKey;
+                    }
+                    else if (currentText == "ㅒ" && combination == "ㅣㅏㅑㅐ")
+                    {
+                        return vowelKey;
+                    }
+                }
+
                 // 입력한 길이가 입력해야 할 길이와 같다면
-                if (combination.Length == correctCombination.Length)
+                if (combination.Length == correctCombinationTemp.Length)
                 {
                     if (combination == correctCombinationTemp)
                     {
@@ -471,7 +484,7 @@ public class TypingPracticePositionPractice : MonoBehaviour
                         return "Wrong";
                     }
                 }
-                else if (combination.Length > correctCombination.Length)
+                else if (combination.Length > correctCombinationTemp.Length)
                 {
                     return "Wrong";
                 }
@@ -494,6 +507,17 @@ public class TypingPracticePositionPractice : MonoBehaviour
                         }
                     }
                 }
+
+                //if (currentText == "ㅒ" || currentText == "ㅖ")
+                //{
+
+
+                    
+                //}
+                //else
+                //{
+                    
+                //}
             }
         }
 

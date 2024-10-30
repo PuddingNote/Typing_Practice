@@ -22,10 +22,14 @@ public class ButtonManagerTitleScene : MonoBehaviour
     public Button[] buttons;
     public ButtonInfo[] buttonsInfo;
     public TextMeshProUGUI explainTextUI;
+    public Button[] extraButtons;
+
+    private ProjectManagerTitleScene projectManager;
 
     // Awake()
     private void Awake()
     {
+        projectManager = GameObject.Find("ProjectManager").GetComponent<ProjectManagerTitleScene>();
         explainTextUI.text = "<한손 키보드 타자 연습>\n\nSKEW : Single-handed Keyboard for People with Disabilities";
 
         for (int i = 0; i < buttons.Length; i++)
@@ -52,17 +56,50 @@ public class ButtonManagerTitleScene : MonoBehaviour
             pointerExit.callback.AddListener((eventData) => OnButtonUnhighlighted(button));
             trigger.triggers.Add(pointerExit);
         }
+
+        for (int i = 0; i < extraButtons.Length; i++)
+        {
+            int index = i;
+            var button = extraButtons[i];
+
+            EventTrigger trigger = button.gameObject.AddComponent<EventTrigger>();
+
+            // extra 버튼 하이라이트
+            EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
+            pointerEnter.eventID = EventTriggerType.PointerEnter;
+            pointerEnter.callback.AddListener((eventData) => OnButtonHighlighted(button, ""));
+            trigger.triggers.Add(pointerEnter);
+
+            // extra 버튼 하이라이트 X
+            EventTrigger.Entry pointerExit = new EventTrigger.Entry();
+            pointerExit.eventID = EventTriggerType.PointerExit;
+            pointerExit.callback.AddListener((eventData) => OnButtonUnhighlighted(button));
+            trigger.triggers.Add(pointerExit);
+
+            // extra 버튼 클릭
+            EventTrigger.Entry pointerClick = new EventTrigger.Entry();
+            pointerClick.eventID = EventTriggerType.PointerClick;
+            pointerClick.callback.AddListener((eventData) => OnButtonClicked(button));
+            trigger.triggers.Add(pointerClick);
+        }
     }
 
     // 버튼 클릭
     private void OnButtonClick(string sceneToLoad)
     {
-        if (sceneToLoad == "")
+        if (sceneToLoad == "EndGame")
         {
             EndGame();
         }
 
-        SceneManager.LoadScene(sceneToLoad);
+        if (sceneToLoad != "")
+        {
+            SceneManager.LoadScene(sceneToLoad);
+        }
+        else
+        {
+            projectManager.StartKeySetting();
+        }
     }
 
     // 버튼 하이라이트
@@ -80,6 +117,20 @@ public class ButtonManagerTitleScene : MonoBehaviour
         button.transform.DOScale(Vector3.one, 0.2f);
     }
 
+    // extra 버튼 클릭
+    private void OnButtonClicked(Button button)
+    {
+        button.transform.DOScale(Vector3.one, 0.2f);
+    }
+
+    // GoTitleScene()
+    public void GoTitleScene()
+    {
+        SceneManager.LoadScene("TitleScene");
+        PersistentDataTitleScene.selectedLanguage = "";
+        PersistentDataTitleScene.selectedHandType = "";
+    }
+
     // 종료
     public void EndGame()
     {
@@ -89,4 +140,5 @@ public class ButtonManagerTitleScene : MonoBehaviour
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
+
 }
