@@ -1,7 +1,9 @@
 # Typing_Practice
 한손 키보드 타자 연습 프로그램
 
-![2  자리연습 오른손](https://github.com/user-attachments/assets/de3c55e9-8277-4317-8245-e2fe19734ec2)
+<img src="https://github.com/user-attachments/assets/aea8b9e6-221b-4909-8ed2-d06e53f7beab" width="500"></img>
+<img src="https://github.com/user-attachments/assets/de3c55e9-8277-4317-8245-e2fe19734ec2" width="500"></img>
+</br>
 
 [2024-10-07]
 - Project Setting
