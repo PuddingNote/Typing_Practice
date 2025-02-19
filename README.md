@@ -1,8 +1,18 @@
-# Typing_Practice
-한손 키보드 타자 연습 프로그램
+# Typing Practice (한손 키보드 타자 연습 프로그램)
 
 <img src="https://github.com/user-attachments/assets/aea8b9e6-221b-4909-8ed2-d06e53f7beab" width="400"></img>
 <img src="https://github.com/user-attachments/assets/de3c55e9-8277-4317-8245-e2fe19734ec2" width="400"></img>
+</br>
+
+## 1. 게임 메커니즘
+  - 한손 키보드 타자 연습 프로그램
+## 2. 주요 목표
+  - 한손 지체 장애인들을 위한 한손 키보드 타자 연습 프로그램
+  - [자리연습, 낱말연습, 짧은 글 연습, 긴 글 연습]
+## 3. 개발 환경
+  - Unity, C#
+## 4. 수상
+  - 2024 한국재활복지공학회 정기학술대회 시제품경진대회 대상
 </br>
 
 [2024-10-07]
@@ -17,7 +27,6 @@
   - 전체적인 UI 구성
   - 단어들을 txt관련 코드로 변경
 </br>
-
 
 [2024-10-11]
 - 단문연습
