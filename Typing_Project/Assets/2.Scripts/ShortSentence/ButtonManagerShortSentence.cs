@@ -77,6 +77,7 @@ public class ButtonManagerShortSentence : MonoBehaviour
     // RestartScene()
     public void RestartScene()
     {
+        PersistentDataShortSentence.selectedLanguage = "";
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

@@ -63,6 +63,7 @@ public class ButtonManagerPositionPractice : MonoBehaviour
     // RestartScene()
     public void RestartScene()
     {
+        PersistentDataPositionPractice.selectedLanguage = "";
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

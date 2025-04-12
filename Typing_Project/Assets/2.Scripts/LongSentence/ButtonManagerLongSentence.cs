@@ -92,6 +92,8 @@ public class ButtonManagerLongSentence : MonoBehaviour
     // RestartScene()
     public void RestartScene()
     {
+        PersistentDataLongSentence.selectedTitle = "";
+        PersistentDataLongSentence.selectedLanguage = "";
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

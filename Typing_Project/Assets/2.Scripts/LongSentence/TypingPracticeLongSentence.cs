@@ -41,6 +41,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     private int correctTypedChars;                  // 올바르게 입력된 문자 수
     private int totalTypos;                         // 총 오타 문자 수
     private int totalInput;                         // 총 입력 수
+    private float typingStartTime = -1f;            // 첫 입력 시작 시간
 
     // ETC
     private TypingStatisticsLongSentence typingStatistics;
@@ -58,6 +59,7 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
         correctTypedChars = 0;
         totalTypos = 0;
         totalInput = 0;
+        typingStartTime = -1f;
 
         isGameEnded = false;
         isPaused = false;
@@ -181,6 +183,12 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     private void CheckInput()
     {
         string typedText = inputField.text;
+
+        if (typingStartTime < 0 && typedText.Length > 0)
+        {
+            typingStartTime = Time.time;
+        }
+
         int correctCharsInSentence = 0;
         int typoWords = 0;
 
@@ -261,10 +269,17 @@ public class TypingPracticeLongSentence : MonoBehaviour, ITypingPractice
     // 타수 Update
     private void UpdateCPM()
     {
-        float elapsedTime = typingStatistics.elapsedTime / 60f;
-        float cpm = (float)(totalInput / (elapsedTime * 5));
+        if (typingStartTime < 0)
+        {
+            typingStatistics.UpdateCPM(0);
+            return;
+        }
 
-        typingStatistics.UpdateCPM(cpm);
+        float elapsedTime = (Time.time - typingStartTime) / 60f;
+        float cpm = (float)(totalInput / (elapsedTime));
+        float wpm = cpm / 5f;
+
+        typingStatistics.UpdateCPM(wpm);
     }
 
     // 정확도 Update

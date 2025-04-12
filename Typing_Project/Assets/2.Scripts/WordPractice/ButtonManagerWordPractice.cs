@@ -77,6 +77,7 @@ public class ButtonManagerWordPractice : MonoBehaviour
     // RestartScene()
     public void RestartScene()
     {
+        PersistentDataWordPractice.selectedLanguage = "";
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
