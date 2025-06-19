@@ -2,6 +2,7 @@
 
 <img src="https://github.com/user-attachments/assets/aea8b9e6-221b-4909-8ed2-d06e53f7beab" width="400"></img>
 <img src="https://github.com/user-attachments/assets/de3c55e9-8277-4317-8245-e2fe19734ec2" width="400"></img>
+<img src="https://github.com/user-attachments/assets/4d685a3e-decb-4bb6-a8a4-50b95f4e3c2d" width="400"></img>
 </br>
 
 ## 1. 게임 메커니즘
