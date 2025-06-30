@@ -1,4 +1,4 @@
-# Typing Practice (한손 키보드 타자 연습 프로그램)
+# 한손 키보드 타자 연습 프로그램 (Typing Practice)
 
 <img src="https://github.com/user-attachments/assets/aea8b9e6-221b-4909-8ed2-d06e53f7beab" width="400"></img>
 <img src="https://github.com/user-attachments/assets/de3c55e9-8277-4317-8245-e2fe19734ec2" width="400"></img>
@@ -15,9 +15,14 @@
 ## 4. 수상
   - 2024 한국재활복지공학회 정기학술대회 시제품경진대회 대상
 </br>
+</br>
+</br>
 
+## [개발 일지]
+<details>
+  <summary>👉 펼쳐 보기</summary>
+</br>
 
-## 개발 일지
 [2024-10-07]
 - Project Setting
 - 추가
@@ -177,3 +182,5 @@
 [2024-11-01]
 - 1차 제작 완료
 </br>
+
+</details>
